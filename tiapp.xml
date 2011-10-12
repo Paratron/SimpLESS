@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ti:app xmlns:ti='http://ti.appcelerator.org'>
+    <!-- These values are edited/maintained by Titanium Developer -->
+<id>com.wearekiss.simpless.open</id>
+<name>SimpLESS</name>
+<version>1.0</version>
+<publisher>KISS</publisher>
+<url>http://wearekiss.com</url>
+<icon>icon.png</icon>
+<copyright>2011 KISS</copyright>
+    <!-- Window Definition - these values can be edited -->
+    <window>
+        <id>initial</id>
+        <title>SimpLess</title>
+        <url>app://index.html</url>
+        <width>500</width>
+        <max-width>3000</max-width>
+        <min-width>400</min-width>
+        <height>350</height>
+        <max-height>3000</max-height>
+        <min-height>350</min-height>
+        <fullscreen>false</fullscreen>
+        <resizable>true</resizable>
+        <chrome scrollbars="true">true</chrome>
+        <maximizable>true</maximizable>
+        <minimizable>true</minimizable>
+        <closeable>true</closeable>
+    </window>
+</ti:app>

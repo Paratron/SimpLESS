@@ -1,0 +1,288 @@
+* {
+    margin: 0;
+    padding: 0;
+    cursor: default;
+}
+
+a img {
+    border: none;
+}
+
+#loader{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1px;
+    height: 1px;
+    z-index: 1000;
+}
+
+#loader:after{
+    content: "Scanning directory...";
+    display: block;
+    width: 150px;
+    height: 80px;
+    position: absolute;
+    top: -40px;
+    left: -75px;
+    background:  rgba(0,0,0,0.8);
+    -webkit-border-radius: 20px;
+    padding:  40px;
+    color: #fff;
+    font-size: 20px;
+    
+}
+
+body{
+    background-image: url(img/grain.png);
+    background-color: #f8fbfe;
+    font-size: 12px;
+}
+
+.welcome{
+    background-color: #c7ecf3;
+}
+
+#list-container{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 30px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#list li{
+    position: relative;
+    background-image: url(img/grain.png);
+    display: block;
+    padding:  10px;
+    padding-bottom:  5px;
+    background-color: #f8fbfe;
+    border-bottom:  #e6f0fa solid 1px;
+}
+
+li:nth-child(2n){
+    background-color: #fff;
+}
+
+#list li.warning{
+    background-color: #feebaf;
+    border-bottom:  #f1d98e;
+}
+
+.warning span{
+    color: #bd9008;
+}
+
+.warning a{
+    color: #bd9008;
+    text-decoration: none;
+}
+/*.warning a:before{
+    content: "> ";
+    color: #957106;
+    font-weight: bold;
+}*/
+
+.warning .overwrite{
+    color: #fff;
+    font-weight: bold;
+    background:  -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f4d675), to(#c09e2e));
+    -webkit-border-radius: 8px;
+    padding:  2px;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-shadow: 0 1px 0 #ad8d28;
+    border-bottom:  #dec46f solid 1px;
+}
+
+.warning .cancel *, .warning .overwrite *, #love, #help, #comment{
+    cursor: pointer !important;
+}
+
+.path:before{
+    content: "";
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    background-image:  url(img/spritemap.png);
+    background-position: -185px -77px;
+    vertical-align: middle;
+}
+
+.warning .path:before{
+    background-position: -213px -77px;
+}
+
+.error .path:before{
+    background-position: -183px -54px;
+}
+
+.success .path:before{
+    background-position: -182px -38px;
+}
+
+#list li.error{
+    background-color: #ffcccc;
+    border-bottom: #fea9a8 solid 1px;
+}
+
+.info{
+    color: #527aa3;
+    text-align: right;
+    line-height: 19px;
+}
+
+.info i{
+    font-style: normal;
+    color: #b5cfea;
+    display: block;
+    padding-top: 10px;
+}
+
+.error .info{
+    color: #bd0808;
+}
+
+.success .info{
+    color: #08bd27;
+}
+
+.info{
+    display: block;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.welcome #list-container{
+    background:  url(img/welcome.png) center no-repeat;
+}
+
+#bar{
+    height: 30px;
+    padding-top: 8px;
+    padding-right: 16px;
+    background:  url(img/spritemap.png) top left repeat-x;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#bar a{
+    display: inline-block;
+    float: right;
+    width: 32px;
+    height: 29px;
+    margin-top: 1px;
+    background-image:  url(img/spritemap.png);
+    vertical-align: top;
+}
+
+#bar span{
+    display: inline-block;
+    height: 25px;
+    margin-top: 5px;
+    background-image:  url(img/spritemap.png);
+    vertical-align: top;
+}
+
+#logo{
+    width: 66px;
+    background-position:  -265px -133px;
+}
+
+#zusatz{
+    width: 134px;
+    background-position: -197px -164px;
+}
+
+#help{
+    background-position: -299px -38px;
+}
+
+#comment{
+    background-position: -267px -38px;
+}
+
+#love{
+    background-position: -235px -38px;
+    position: relative;
+}
+
+#love.active{
+    background-position: -235px -68px;
+}
+
+#love span{
+    position: absolute;
+    display: block;
+    width: 176px;
+    height: 178px;
+    background:  url(img/spritemap.png) left -38px;
+    bottom: 30px;
+    right: -22px;
+    display: none;
+}
+
+/* Thank you, its active! */
+#love.active span:after{
+    content: "";
+    display: block;
+    width: 120px;
+    height: 19px;
+    background:  url(img/spritemap.png) -211px -192px;
+    position: absolute;
+    bottom: 17px;
+    left: 27px;
+}
+
+#list{
+    padding:  0;
+    margin:  0;
+    display: block;
+}
+
+li b{
+    display: block;
+    color: #3c3c3c;
+    padding-bottom:  5px;
+}
+
+li span{
+    color: #989898;
+}
+
+li b{
+    font-size: 14px;
+}
+
+#add-more{
+   border: none !important;
+    height: 40px;
+    background: url(img/more.png) center no-repeat !important;
+}
+
+#dropbox{
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    opacity: 0;
+    display: none;
+    cursor: default;
+}
+
+#overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(255,255,255,0.6) url(img/notice.png) center no-repeat;
+    display: none;
+}
