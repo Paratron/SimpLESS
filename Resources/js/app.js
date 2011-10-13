@@ -7,11 +7,6 @@
  */
 var app = {
     /**
-     * Current Tool Version to display in the window title.
-     */
-    version: '1.1',
-
-    /**
      * Does the compiler have to put a comment in front of the compiled css files?
      */
     show_love: true,
@@ -43,7 +38,7 @@ var app = {
      * We have to set up some listeners for the UI and stuff.
      */
     init: function() {
-        $('head title').text('SimpLESS ' + app.version);
+        $('head title').text('SimpLESS ' + Titanium.App.getVersion());
 
         //The words "your lessCSS compiler" should disappear after 5 seconds.
         setTimeout(function() {
@@ -170,6 +165,7 @@ var app = {
      * This function is called by an interval defined in app.init();
      * It constantly checks if the textarea #dropbox contains any value (it' gets updated if a user drops a file on it).
      * If there is a single file found, the file will be indexed (if not already indexed). If a directory is found, it will be passed to app.scandir()
+     * @TODO: Something needs to be done here. Appcelerator Desktop just has no real function to catch file drops. Yes, it works somehow - but try and select multiple files and drop them on the app. It won't work -_-
      */
     drop_action: function() {
         //First get a reference on the textarea
@@ -243,22 +239,24 @@ var app = {
         //Now we create the LESS object to store in our index.
         var elem = {
             inchecksum: checksum,
-            infile: file_object, //Okay, hier das LESS File.
-            instamp: Number(file_object.modificationTimestamp()), //Da wurde die LESS File zum letzten mal geändert
-            outpath: cssfile_path_relative, //Relativer Pfad zur CSS Datei. Wird eigentlich nur noch zur Anzeige benötigt.
-            outfile: cssfile, //Ausgabe Datei
-            outstamp: the_outstamp, //Und da wurde sie zum letzten mal geändert.
+            infile: file_object, //Okay this is the LESS file.
+            instamp: Number(file_object.modificationTimestamp()), //The LESS file was changed here
+            outpath: cssfile_path_relative, //Relative path to the CSS file. Only needed for displaying right now.
+            outfile: cssfile, //Output file (CSS)
+            outstamp: the_outstamp, //Time, the output file has been changed the last time.
             compile_status: 0, //0 = neutral, 1 = success, 2 = fault
             compiler_error: '',
-            compiler_wait: false
+            compiler_wait: false //Should the compiler ignore this file? Will be determined below.
         };
 
         //Is the timestamp of the CSS file newer than the timestamp of the LESS file?
         //If so, tell the compiler to not overwrite the CSS until the user decided what to do.
 
-        var di = new Date(elem.instamp);
-        var doo = new Date(elem.outstamp);
-        elem.compiler_wait = (di.toDateString() != doo.toDateString());
+        if(cssfile.exists()){
+            var di = new Date(elem.instamp);
+            var doo = new Date(elem.outstamp);
+            elem.compiler_wait = (di.toDateString() != doo.toDateString());
+        }
 
         //Okay, now push our new files into the index.
         app.lessfiles.push(elem);

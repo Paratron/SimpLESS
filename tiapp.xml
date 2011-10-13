@@ -13,12 +13,12 @@
         <id>initial</id>
         <title>SimpLess</title>
         <url>app://index.html</url>
-        <width>500</width>
+        <width>330</width>
         <max-width>3000</max-width>
-        <min-width>400</min-width>
-        <height>350</height>
+        <min-width>330</min-width>
+        <height>280</height>
         <max-height>3000</max-height>
-        <min-height>350</min-height>
+        <min-height>280</min-height>
         <fullscreen>false</fullscreen>
         <resizable>true</resizable>
         <chrome scrollbars="true">true</chrome>
