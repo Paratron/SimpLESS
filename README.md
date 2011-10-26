@@ -4,9 +4,9 @@ SimpLESS Compiler 1.1
 Description
 -----------
 
-LESS ( http://lesscss.org/ ) is a gread tool to write CSS much faster.
+LESS ( http://lesscss.org/ ) is a great tool to write CSS much faster.
 But however - in the way its meant to be (running either on node.js or being interpreted by JavaScript in the browser) its just not usable for most web projects.
-For the mac there is this great tool calles LESS.app ( http://incident57.com/less/ ) but for linux and windows one has to struggle with command line scripts and worse things to compile his LESS files to plain CSS.
+For the mac there is this great tool called LESS.app ( http://incident57.com/less/ ) but for linux and windows one has to struggle with command line scripts and worse things to compile his LESS files to plain CSS.
 Who wants to setup a node.js server for this job?!
 
 Me not ;)

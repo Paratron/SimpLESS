@@ -7,13 +7,18 @@
  */
 var app = {
     /**
+     * If the app is in debug mode, messages will be posted to the console window.
+     */
+    debug_mode: true,
+
+    /**
      * Does the compiler have to put a comment in front of the compiled css files?
      */
     show_love: true,
     /**
      * This is the CSS comment put by the compiler if show_love = true;
      */
-    love_message: '\/* This beautiful CSS-File has been crafted with LESS (lesscss.org) and compiled by simpLESS (wearekiss.de/simpless) *\/',
+    love_message: '\/* This beautiful CSS-File has been crafted with LESS (lesscss.org) and compiled by simpLESS (wearekiss.com/simpless) *\/',
     /**
      * An interval will be set here in the init() function.
      */
@@ -38,6 +43,7 @@ var app = {
      * We have to set up some listeners for the UI and stuff.
      */
     init: function() {
+        this.debug('Hello - debug Mode is on!');
         $('head title').text('SimpLESS ' + Titanium.App.getVersion());
 
         //The words "your lessCSS compiler" should disappear after 5 seconds.
@@ -68,12 +74,14 @@ var app = {
         //App Window gains focus. Hide the dropbox to make the UI accessible!
         window.onfocus = function() {
             $('#dropbox').hide();
+            app.debug('Drop Area hidden.');
             clearInterval(app.dropTimer);
         }
 
         //App Window has lost focus. Now we can show the (invisible) dropbox element which catches incoming file drops.
         window.onblur = function() {
             $('#dropbox').show();
+            app.debug('Drop Area active.');
             app.dropTimer = setInterval(app.drop_action, 2000);
         }
 
@@ -128,6 +136,17 @@ var app = {
         // 2: Passing the file drops to the crawler (see the observe loop interval in line 71)
         // 3: Checking the indexed files every second for changes
         // 4: When changes have been made compile the LESS files into CSS
+        this.debug('Init finished. App is ready.');
+    },
+
+    /**
+     * Sends a debug message to the console, if app.debug_mode = true;
+     * @param string message
+     * @return void
+     */
+    debug: function(message){
+        if(!this.debug_mode) return;
+        Titanium.API.debug(message);
     },
 
     /**
@@ -146,13 +165,17 @@ var app = {
             //Put the current lessfile here, since the variable name is shorter.
             lf = app.lessfiles[i];
 
+            app.debug('Observing: '+lf.infile);
+
             //If the file is not market as "don't compile" and the modification stamp has changed, then recompile!
             if (! lf.compiler_wait && lf.infile.modificationTimestamp() != lf.instamp) {
                 /*
                  The compiler will parse the LESS file and put the results in the according CSS file.
                  If there is an error, the error will be stored in the LESS file object and later be rendered by app.list_update()
                  */
+                app.debug('Trying to compile!');
                 app.compile(lf);
+
                 //Update the timestamp of the LESS file object in the index.
                 app.lessfiles[i].instamp = lf.infile.modificationTimestamp();
                 //Now redraw the file list in the UI to make changes visible.
@@ -173,7 +196,8 @@ var app = {
         //Does the textareas text contain any value?
         if ($dropBox.val()) {
             //The textareas text is the url to the file or folder which was dropped on simpLESS
-            var url = $dropBox.val();
+            var url = decodeURI($dropBox.val());
+            app.debug(url);
             //We make the textareas value empty again to accept more drops.
             $dropBox.val('');
 
@@ -182,6 +206,7 @@ var app = {
 
             if (file_obj.isFile()) {
                 //Okay, we have a single file here. Is it a LESS file?
+                app.debug('Testing dropped file...');
                 if (file_obj.extension() == 'less') {
                     //Yes, it is! Try to index it.
                     app.index_add(file_obj);
@@ -193,6 +218,7 @@ var app = {
             if (file_obj.isDirectory()) {
                 //Wow, its a directory!
                 //Filter all LESS files out of the directory and its subdirectories with app.scandir();
+                app.debug('Starting directory crawling...');
                 $('#overlay').fadeIn('fast', function() {
                     var filelist = app.scandir(file_obj);
                     for (var i in filelist) {
