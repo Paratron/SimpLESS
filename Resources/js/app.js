@@ -19,12 +19,16 @@ var app = {
      * This is the CSS comment put by the compiler if show_love = true;
      */
     love_message: '\/* This beautiful CSS-File has been crafted with LESS (lesscss.org) and compiled by simpLESS (wearekiss.com/simpless) *\/',
+
     /**
-     * An interval will be set here in the init() function.
+     * This function holds a timeout to re-render the file list when nothing else happens to keep the times up-to-date.
      */
-    dropTimer: null,
     update_schedule: null,
 
+    /**
+     * Drop Path will be updated when the user drags a file onto the app.
+     */
+    drop_path: '',
 
     /**
      * This array holds the indexed less files.
@@ -36,6 +40,39 @@ var app = {
      * An instance of the LESS CSS parser from http://lesscss.org
      */
     parser: new (less.Parser),
+
+    ti_filedrop: {
+        bind_object: null,
+        files: [],
+        wait: 0,
+        bind: function(object) {
+            this.bind_object = object;
+
+            object.ondragenter = object.ondragover = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.dataTransfer.effectAllowed = 'all';
+                e.dataTransfer.dropEffect = 'all';
+                if (e.dataTransfer.files.length) {
+                    app.ti_filedrop.files = e.dataTransfer.files;
+                    app.ti_filedrop.wait = 0;
+                }
+            };
+
+            object.onmousemove = function(e) {
+                if (app.ti_filedrop.files.length == 0) return;
+                app.ti_filedrop.wait++
+                if (app.ti_filedrop.wait > 5) {
+                    var evt = app.ti_filedrop.bind_object.createEvent('Event');
+                    evt.initEvent('drop', true, true);
+                    evt.files = app.ti_filedrop.files;
+                    app.ti_filedrop.files = [];
+                    app.ti_filedrop.wait = 0;
+                    app.ti_filedrop.bind_object.dispatchEvent(evt);
+                }
+            };
+        }
+    },
 
 
     /**
@@ -54,51 +91,36 @@ var app = {
         //If one hovers over the heart-button, we smoothly fade the tooltip.
         //The variable show_love will be set to advice the compile if he has to set an CSS comment.
         $('#love').hover(
-                function() {
-                    $('#love span').fadeIn();
-                },
-                function() {
-                    $('#love span').fadeOut();
-                }
+            function() {
+                $('#love span').fadeIn();
+            },
+            function() {
+                $('#love span').fadeOut();
+            }
         ).click(function(e) {
-                    $(this).toggleClass('active');
-                    if (!$(this).hasClass('active')) app.show_love = true; else app.show_love = false;
-                });
+                $(this).toggleClass('active');
+                if (!$(this).hasClass('active')) app.show_love = true; else app.show_love = false;
+            });
 
 
         // =========================================================================================
-        //Drop activators.
-        //Drops will only be accepted, if the application has no focus.
+        //Drop listeners
         // =========================================================================================
 
-        //App Window gains focus. Hide the dropbox to make the UI accessible!
-        window.onfocus = function() {
-            $('#dropbox').hide();
-            app.debug('Drop Area hidden.');
-            clearInterval(app.dropTimer);
-        }
+        // Appcelerator is somehow fucked up if it comes to handle drop events propably. The DragOver and DragEnter events are handled correctly, but the Drag event never gets fired.
+        //So I wrote a little kind of polyfill that covers this bug for me.
+        //What a mess.
+        app.ti_filedrop.bind(document);
 
-        //App Window has lost focus. Now we can show the (invisible) dropbox element which catches incoming file drops.
-        window.onblur = function() {
-            $('#dropbox').show();
-            app.debug('Drop Area active.');
-            app.dropTimer = setInterval(app.drop_action, 2000);
-        }
-
-        //User drags an object onto the dropbox.
-        window.ondragenter = function() {
-            $('#dropbox').show();
-            app.dropTimer = setInterval(app.drop_action, 2000);
-        }
-
-        //User removes the dragged object from the dropbox.
-        window.ondragleave = function() {
-            $('#dropbox').hide();
-            clearInterval(app.dropTimer);
-        }
+        //Notice: My drop event directly has a files property - no dataTransfer Object, since I just don't need it.
+        document.addEventListener('drop', function(e){
+            for(var i = 0; i < e.files.length; i++){
+                app.drop_action(e.files[i].path);
+            }
+        });
 
         // =========================================================================================
-        // End of the Drop Activators
+        // End of the Drop Listeners
         // =========================================================================================
 
         //Start the Observe Loop
@@ -113,7 +135,6 @@ var app = {
 
         //Click here to say: YES, please overwrite my CSS files.
         $('.overwrite').live('click', function(e) {
-            e.preventDefault();
             var checksum = $(this).parent().parent().attr('rel');
             app.overwrite_file(checksum);
         });
@@ -144,8 +165,8 @@ var app = {
      * @param string message
      * @return void
      */
-    debug: function(message){
-        if(!this.debug_mode) return;
+    debug: function(message) {
+        if (!this.debug_mode) return;
         Titanium.API.debug(message);
     },
 
@@ -165,7 +186,7 @@ var app = {
             //Put the current lessfile here, since the variable name is shorter.
             lf = app.lessfiles[i];
 
-            app.debug('Observing: '+lf.infile);
+            app.debug('Observing: ' + lf.infile);
 
             //If the file is not market as "don't compile" and the modification stamp has changed, then recompile!
             if (! lf.compiler_wait && lf.infile.modificationTimestamp() != lf.instamp) {
@@ -185,24 +206,15 @@ var app = {
     },
 
     /**
-     * This function is called by an interval defined in app.init();
-     * It constantly checks if the textarea #dropbox contains any value (it' gets updated if a user drops a file on it).
      * If there is a single file found, the file will be indexed (if not already indexed). If a directory is found, it will be passed to app.scandir()
-     * @TODO: Something needs to be done here. Appcelerator Desktop just has no real function to catch file drops. Yes, it works somehow - but try and select multiple files and drop them on the app. It won't work -_-
      */
-    drop_action: function() {
-        //First get a reference on the textarea
-        var $dropBox = $('#dropbox');
-        //Does the textareas text contain any value?
-        if ($dropBox.val()) {
-            //The textareas text is the url to the file or folder which was dropped on simpLESS
-            var url = decodeURI($dropBox.val());
-            app.debug(url);
-            //We make the textareas value empty again to accept more drops.
-            $dropBox.val('');
+    drop_action: function(filepath) {
+        //Does our path bucket contain a path name?
+        app.debug('Drop Action!');
+        if (filepath) {
+            app.debug(filepath);
 
-            var pDir = url.replace('file:///', '');
-            var file_obj = Titanium.Filesystem.getFile(pDir.toString());
+            var file_obj = Titanium.Filesystem.getFile(filepath.toString());
 
             if (file_obj.isFile()) {
                 //Okay, we have a single file here. Is it a LESS file?
@@ -278,7 +290,7 @@ var app = {
         //Is the timestamp of the CSS file newer than the timestamp of the LESS file?
         //If so, tell the compiler to not overwrite the CSS until the user decided what to do.
 
-        if(cssfile.exists()){
+        if (cssfile.exists()) {
             var di = new Date(elem.instamp);
             var doo = new Date(elem.outstamp);
             elem.compiler_wait = (di.toDateString() != doo.toDateString());

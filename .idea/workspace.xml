@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="550d9bb0-c15d-4acd-b7a7-321b3934c383" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Resources/index.html" afterPath="$PROJECT_DIR$/Resources/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Resources/js/app.js" afterPath="$PROJECT_DIR$/Resources/js/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tiapp.xml" afterPath="$PROJECT_DIR$/tiapp.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/timanifest" afterPath="$PROJECT_DIR$/timanifest" />
     </list>
     <ignored path="Open simpLess.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,19 +28,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Resources/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="7" selection-start="1058" selection-end="1058" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="app.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Resources/js/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="353" column="118" selection-start="14262" selection-end="14262" vertical-scroll-proportion="0.28982726">
+            <state line="62" column="62" selection-start="1878" selection-end="1878" vertical-scroll-proportion="0.5777351">
               <folding />
             </state>
           </provider>
@@ -53,16 +43,7 @@
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="16" selection-start="882" selection-end="882" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tiapp.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tiapp.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="22" selection-start="706" selection-end="706" vertical-scroll-proportion="0.0">
+            <state line="23" column="16" selection-start="882" selection-end="882" vertical-scroll-proportion="-17.25">
               <folding />
             </state>
           </provider>
@@ -99,8 +80,10 @@
         <option value="$PROJECT_DIR$/Resources/style.css" />
         <option value="$PROJECT_DIR$/Resources/js/worker.js" />
         <option value="$PROJECT_DIR$/tiapp.xml" />
-        <option value="$PROJECT_DIR$/Resources/index.html" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/dist/win32/SimpLESS/Resources/js/app.js" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/Resources/index.html" />
         <option value="$PROJECT_DIR$/Resources/js/app.js" />
       </list>
     </option>
@@ -147,6 +130,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="SimpLESS" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SimpLESS" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SimpLESS" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -259,6 +256,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\titanium\SimpLESS\Resources\js" />
       <recent name="C:\titanium\SimpLESS\Resources\img" />
       <recent name="C:\titanium\Open simpLess\Resources\js" />
       <recent name="C:\titanium\Open simpLess\dist\win32\Open simpLess\Resources\js" />
@@ -305,6 +303,7 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Phing Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32994455" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23117992" sideWeight="0.54066545" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -315,7 +314,6 @@
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -374,11 +372,6 @@
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Resources/img/icon.png">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -399,9 +392,30 @@
         <state line="32" column="21" selection-start="62871" selection-end="62871" vertical-scroll-proportion="0.17274472" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Resources/index.html">
+    <entry file="file://$PROJECT_DIR$/Resources/style.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="7" selection-start="1058" selection-end="1058" vertical-scroll-proportion="0.0" />
+        <state line="285" column="75" selection-start="4647" selection-end="4647" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dist/win32/SimpLESS/Resources/js/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="64" column="0" selection-start="1940" selection-end="1940" vertical-scroll-proportion="0.13243762">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tiapp.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="22" selection-start="706" selection-end="706" vertical-scroll-proportion="0.2843602">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="5" selection-start="14" selection-end="14" vertical-scroll-proportion="0.028436018">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
@@ -409,24 +423,21 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="16" selection-start="882" selection-end="882" vertical-scroll-proportion="0.0">
+        <state line="23" column="16" selection-start="882" selection-end="882" vertical-scroll-proportion="-17.25">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tiapp.xml">
+    <entry file="file://$PROJECT_DIR$/Resources/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="22" selection-start="706" selection-end="706" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Resources/style.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="285" column="75" selection-start="4647" selection-end="4647" vertical-scroll-proportion="0.0" />
+        <state line="11" column="33" selection-start="474" selection-end="474" vertical-scroll-proportion="-7.5">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Resources/js/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="353" column="118" selection-start="14262" selection-end="14262" vertical-scroll-proportion="0.28982726">
+        <state line="62" column="62" selection-start="1878" selection-end="1878" vertical-scroll-proportion="0.5777351">
           <folding />
         </state>
       </provider>
