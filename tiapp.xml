@@ -1,13 +1,15 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<ti:app xmlns:ti='http://ti.appcelerator.org'>
+<?xml version="1.0" encoding="UTF-8"?>
+<ti:app xmlns:ti="http://ti.appcelerator.org">
+    <guid>cd74c124-3f01-4726-9430-4cbc61e0340f</guid>
+    <description>A simple LESS compiler for Windows, osX and Linux</description>
     <!-- These values are edited/maintained by Titanium Developer -->
-<id>com.wearekiss.simpless.open</id>
-<name>SimpLESS</name>
-<version>1.1</version>
-<publisher>KISS</publisher>
-<url>http://wearekiss.com</url>
-<icon>icon.png</icon>
-<copyright>2011 KISS</copyright>
+    <id>com.wearekiss.simpless.open</id>
+    <name>SimpLESS</name>
+    <version>1.1</version>
+    <publisher>KISS</publisher>
+    <url>http://wearekiss.com</url>
+    <icon>icon.png</icon>
+    <copyright>2011 KISS</copyright>
     <!-- Window Definition - these values can be edited -->
     <window>
         <id>initial</id>
