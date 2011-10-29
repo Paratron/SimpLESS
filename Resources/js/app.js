@@ -5,7 +5,6 @@
  * @author Christian Engel <christian.engel@wearekiss.com>
  * @version 1.1
  */
-delete window.localStorage['simpLESS_user_config'];
 var app = {
     /**
      * If the app is in debug mode, messages will be posted to the console window.
@@ -51,7 +50,8 @@ var app = {
      */
     default_config: {
     	locale: 'English',
-    	show_love: true
+    	show_love: true,
+    	minify_css: true
     },
 
     /**
@@ -390,7 +390,13 @@ var app = {
             output.touch();
             output.setWritable();
             var csscode = tree.toCSS();
-			var pointer = output.open();
+            
+            //minify CSS if required
+            if (app.user_config.minify_css) {
+            	csscode = app.minify_css(csscode);
+            }
+            
+            var pointer = output.open();
             pointer.open(pointer.MODE_WRITE);
             try {
                 if (app.user_config.show_love) pointer.write(app.love_message + '\n');
@@ -570,5 +576,63 @@ var app = {
     		parsed_L10n = Titanium.JSON.parse(L10n_data);
 
     	app.localized_strings = parsed_L10n[locale];
+    },
+    /**
+     * Minifies CSS by removing comments + whitespace
+     * 
+     * @param string css The css to be minified
+     */
+    minify_css: function(css) {
+
+    	//regular expressions used to minify CSS
+    	var regexps = {
+    		newline_whitespace: {
+    			regexp: /(\r\n|\n|\r)/gm,
+    			replacement: ''
+    		},
+    		left_curly_brace_spacing: {
+    			regexp: /(\s+\{\s+)/gm,
+    			replacement: '{'
+    		},
+    		right_curly_brace_spacing: {
+    			regexp: /(\s+\}\s+)/gm,
+    			replacement: '}'
+    		},
+    		double_quotes: {
+    			regexp: /\"/gm,
+    			replacement: '\''
+    		},
+    		colon_spacing: {
+    			regexp: /\:\s+/gm,
+    			replacement: ':'
+    		},
+    		semi_colon_spacing: {
+    			regexp: /\;\s+/gm,
+    			replacement: ';'
+    		},
+    		last_semi_colon: {
+    			regexp: /;\}/gm,
+    			replacement: '}'
+    		},
+    		comma_spacing: {
+    			regexp: /\s+\,\s+/gm,
+    			replacement: ','
+    		},
+    		comments: {
+    			regexp: /\*[^*]*\*+([^/][^*]*\*+)*/gm,
+    			replacement: ''
+    		},
+    		double_line_comments: {
+    			regexp: /\/\//gm,
+    			replacement: ''
+    		}
+    	}
+    	
+    	//minify...
+    	for (x in regexps) {
+    		css = css.replace(regexps[x].regexp,regexps[x].replacement);
+    	}
+		
+		return css;
     }
 }

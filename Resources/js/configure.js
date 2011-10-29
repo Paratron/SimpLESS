@@ -20,6 +20,10 @@ var SimpLESS_Config = {
 			label: 'locale',
 			options: [],
 			data_source: 'get_locale_options'
+		},
+		minify_css: {
+			type: 'checkbox',
+			label: 'Do you want the CSS output to be minified?'
 		}
 	},
 	/*
