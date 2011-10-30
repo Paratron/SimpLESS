@@ -12,11 +12,7 @@ var app = {
     debug_mode: true,
 
     /**
-     * Does the compiler have to put a comment in front of the compiled css files?
-     */
-    show_love: true,
-    /**
-     * This is the CSS comment put by the compiler if show_love = true;
+     * This is the CSS comment put by the compiler if user_config.show_love = true;
      */
     love_message: '\/* This beautiful CSS-File has been crafted with LESS (lesscss.org) and compiled by simpLESS (wearekiss.com/simpless) *\/',
 
@@ -35,6 +31,28 @@ var app = {
      * It
      */
     lessfiles: [],
+
+	 /**
+     * These are strings used in the app that are localized based on the users locale
+     * 
+     */
+    localized_strings: [],
+    
+     /**
+     * User configuration options for app
+     * 
+     */
+    user_config: {},
+    
+    /**
+     * Default configuration options set for the user when the app is first run
+     * 
+     */
+    default_config: {
+    	locale: 'English',
+    	show_love: true,
+    	minify_css: true
+    },
 
     /**
      * An instance of the LESS CSS parser from http://lesscss.org
@@ -80,6 +98,12 @@ var app = {
      * We have to set up some listeners for the UI and stuff.
      */
     init: function() {
+    	//load user configuration options for simpLESS
+    	app.load_user_config();
+    	
+    	//load localized strings based on users locale
+    	app.L10n();
+    	
         this.debug('Hello - debug Mode is on!');
         $('head title').text('SimpLESS ' + Titanium.App.getVersion());
 
@@ -87,21 +111,6 @@ var app = {
         setTimeout(function() {
             $('#zusatz').fadeOut();
         }, 5000);
-
-        //If one hovers over the heart-button, we smoothly fade the tooltip.
-        //The variable show_love will be set to advice the compile if he has to set an CSS comment.
-        $('#love').hover(
-            function() {
-                $('#love span').fadeIn();
-            },
-            function() {
-                $('#love span').fadeOut();
-            }
-        ).click(function(e) {
-                $(this).toggleClass('active');
-                if (!$(this).hasClass('active')) app.show_love = true; else app.show_love = false;
-            });
-
 
         // =========================================================================================
         //Drop listeners
@@ -381,10 +390,16 @@ var app = {
             output.touch();
             output.setWritable();
             var csscode = tree.toCSS();
+            
+            //minify CSS if required
+            if (app.user_config.minify_css) {
+            	csscode = app.minify_css(csscode);
+            }
+            
             var pointer = output.open();
             pointer.open(pointer.MODE_WRITE);
             try {
-                if (app.show_love) pointer.write(app.love_message + '\n');
+                if (app.user_config.show_love) pointer.write(app.love_message + '\n');
                 pointer.write(csscode);
             }
             catch(e) {
@@ -446,8 +461,8 @@ var app = {
         var filedate = new Date(Math.floor(lessfile.infile.modificationTimestamp() / 1000));
 
         //This is a list of all months, since we want to display the month' name instead of the number. 
-        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'];
-
+		var months = this.localized_strings['months'];
+		
         //Format the time for output.
         var filedate_str = months[filedate.getMonth()] + ' ' + app.dbldigit(filedate.getDate()) + ', ' + filedate.getFullYear();
         var time = app.dbldigit(filedate.getHours()) + ':' + app.dbldigit(filedate.getMinutes());
@@ -536,5 +551,88 @@ var app = {
                 return true;
             }
         }
+    },
+     /**
+     * Loads a users saved configuration options
+     */
+    load_user_config: function() {
+    	var config = localStorage.getItem('simpLESS_user_config');
+    	
+    	//if there is no user config, use default_config
+    	if (!config) {
+    		config = Titanium.JSON.stringify(app.default_config);
+    		localStorage.setItem('simpLESS_user_config',config);
+    	}
+   
+    	app.user_config = Titanium.JSON.parse(config);
+    },
+    /**
+     * Sets up localized strings
+     */
+    L10n: function() {
+    	var locale = app.user_config.locale,
+    		L10n_file = Titanium.App.getHome() + '/Resources/L10n.json',
+    		L10n_data = Titanium.Filesystem.getFile(L10n_file).open().read().toString(),
+    		parsed_L10n = Titanium.JSON.parse(L10n_data);
+
+    	app.localized_strings = parsed_L10n[locale];
+    },
+    /**
+     * Minifies CSS by removing comments + whitespace
+     * 
+     * @param string css The css to be minified
+     */
+    minify_css: function(css) {
+
+    	//regular expressions used to minify CSS
+    	var regexps = {
+    		newline_whitespace: {
+    			regexp: /(\r\n|\n|\r)/gm,
+    			replacement: ''
+    		},
+    		left_curly_brace_spacing: {
+    			regexp: /(\s+\{\s+)/gm,
+    			replacement: '{'
+    		},
+    		right_curly_brace_spacing: {
+    			regexp: /(\s+\}\s+)/gm,
+    			replacement: '}'
+    		},
+    		double_quotes: {
+    			regexp: /\"/gm,
+    			replacement: '\''
+    		},
+    		colon_spacing: {
+    			regexp: /\:\s+/gm,
+    			replacement: ':'
+    		},
+    		semi_colon_spacing: {
+    			regexp: /\;\s+/gm,
+    			replacement: ';'
+    		},
+    		last_semi_colon: {
+    			regexp: /;\}/gm,
+    			replacement: '}'
+    		},
+    		comma_spacing: {
+    			regexp: /\s+\,\s+/gm,
+    			replacement: ','
+    		},
+    		comments: {
+    			regexp: /\*[^*]*\*+([^/][^*]*\*+)*/gm,
+    			replacement: ''
+    		},
+    		double_line_comments: {
+    			regexp: /\/\//gm,
+    			replacement: ''
+    		}
+    	}
+    	
+    	//minify...
+    	for (x in regexps) {
+    		css = css.replace(regexps[x].regexp,regexps[x].replacement);
+    	}
+		
+		return css;
     }
 }
