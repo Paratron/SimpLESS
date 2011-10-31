@@ -1,4 +1,4 @@
-SimpLESS Compiler 1.1
+SimpLESS Compiler 1.2
 =====================
 
 Description
@@ -18,12 +18,17 @@ Changelog
 ---------
 
 v 1.2
+
 - implemented a new drag&drop system. Should work much more reliable now.
 - fixed a bug where a space in the filepath prevented simpless from recognizing it.
 - fixed a bug where the "show love" message was displayed when it shouldnt
 - improved compilation error checking
 - improved contrast in the colors of error messages in the UI
 - included LESS parser 1.1.4
+- added @import functionality
+- when minimizing the app, it goes to the tray
+- added a "restore last session" button
+- implemented an automatic update checker
 
 
 Download Builds

@@ -8,6 +8,7 @@
 <url>http://wearekiss.com</url>
 <icon>icon.png</icon>
 <copyright>2011 KISS</copyright>
+<NSUIElement>1</NSUIElement>
     <!-- Window Definition - these values can be edited -->
     <window>
         <id>initial</id>
@@ -25,5 +26,6 @@
         <maximizable>true</maximizable>
         <minimizable>true</minimizable>
         <closeable>true</closeable>
+        <NSUIElement>1</NSUIElement>
     </window>
 </ti:app>

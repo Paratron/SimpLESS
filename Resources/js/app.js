@@ -21,6 +21,11 @@ var app = {
     love_message: '\/* This beautiful CSS-File has been crafted with LESS (lesscss.org) and compiled by simpLESS (wearekiss.com/simpless) *\/',
 
     /**
+     * The tray icon object will be stored here. Created by app.tray_init();
+     */
+    tray_icon: null,
+
+    /**
      * This function holds a timeout to re-render the file list when nothing else happens to keep the times up-to-date.
      */
     update_schedule: null,
@@ -35,6 +40,11 @@ var app = {
      * It
      */
     lessfiles: [],
+
+    /**
+     * This is an simple array of file paths of less objects. They will be stored in localStorage on application exit and can be used to restore the file list on application start.
+     */
+    restore_paths: [],
 
     /**
      * An instance of the LESS CSS parser from http://lesscss.org
@@ -81,6 +91,19 @@ var app = {
      */
     init: function() {
         this.debug('Hello - debug Mode is on!');
+
+        app.check_update();
+
+        //First start on a mac? Show some information for the poor user...
+        if(Titanium.getPlatform() == 'osx'){
+            if(localStorage.getItem('firstRun') != 1){
+                if(confirm('This is your first start of SimpLESS, we will display this message only once:\n\nIf you want to hide this app from the dock, then please read our tutorial on our blog: \n\nhttp://wearekiss.com/blog/simpless-1.2\n\nClick OK to open it in your browser.')){
+                    Titanium.Platform.openURL('http://wearekiss.com/blog/simpless-1.2');
+                }
+            }
+        }
+        localStorage.setItem('firstRun', 1);
+
         $('head title').text('SimpLESS ' + Titanium.App.getVersion());
 
         //The words "your lessCSS compiler" should disappear after 5 seconds.
@@ -113,9 +136,19 @@ var app = {
         app.ti_filedrop.bind(document);
 
         //Notice: My drop event directly has a files property - no dataTransfer Object, since I just don't need it.
-        document.addEventListener('drop', function(e){
-            for(var i = 0; i < e.files.length; i++){
-                app.drop_action(e.files[i].path);
+        document.addEventListener('drop', function(e) {
+            var path;
+            if(Titanium.getPlatform() == 'linux' && e.files.length > 1){
+                alert('Due to a bug in the appcelerator framework, only one file/folder can be collected at once. :(');
+            }
+            for (var i = 0; i < e.files.length; i++) {
+                path = e.files[i].path;
+                //On linux there is some drawback with file dropping: we get an URI encoded string...
+                if(Titanium.getPlatform() == 'linux'){
+                    path = decodeURI(path.replace('file://', ''));
+                    
+                }
+                app.drop_action(path);
             }
         });
 
@@ -157,28 +190,64 @@ var app = {
          */
         app.tray_init();
 
-        //Great, thats it. So, the app does the following:
-        // 1: Switching into Dropmode when loosing focus to wait for file drops
-        // 2: Passing the file drops to the crawler (see the observe loop interval in line 71)
-        // 3: Checking the indexed files every second for changes
-        // 4: When changes have been made compile the LESS files into CSS
+        //When the main window gets closed, clean up.
+        var win = Titanium.UI.getMainWindow();
+        win.addEventListener(Titanium.CLOSED, function(e) {
+            var restore_data = Titanium.JSON.stringify(app.restore_paths);
+            localStorage.setItem('restore', restore_data);
+            Titanium.UI.clearTray();
+        });
+
+        //Check if restore data is available.
+        var restoreData = localStorage.getItem('restore');
+        if(typeof restoreData == 'string' && restoreData != '[]'){
+            app.restore_paths = Titanium.JSON.parse(restoreData);
+            $('#restore').click(function(e){
+                e.preventDefault();
+                $('#restore').remove();
+                var xpath = app.restore_paths;
+                app.restore_paths = [];
+                for(var i in xpath){
+                    app.drop_action(xpath[i]);
+                }
+            });
+        } else {
+            $('#restore').remove();
+        }
+
         this.debug('Init finished. App is ready.');
+    },
+
+    /**
+     * Check on the kiss server, if there is an update available.
+     */
+    check_update: function(){
+        $.get('http://wearekiss.com/simpless-version.txt', function(response){
+            if(response != Titanium.App.getVersion()){
+                if(confirm('There is an update available under http://wearekiss.com/simpless\n\nClick OK to open the website to download it.')){
+                    Titanium.Platform.openURL('http://wearekiss.com/simpless');
+                }
+            }
+        });
     },
 
     /**
      * This function initializes the send-to-tray mode.
      *
      */
-    tray_init: function(){
+    tray_init: function() {
         //We want to trigger when the app gets minimized to hide the main window
         var win = Titanium.UI.getMainWindow();
-        win.addEventListener(Titanium.MINIMIZED, function(e){
+        win.addEventListener(Titanium.MINIMIZED, function(e) {
             e.preventDefault();
+            win.unminimize();
             win.hide();
         });
-        //When the main window gets closed, clean up the tray.
-        win.addEventListener(Titanium.CLOSED, function(e){
-           Titanium.UI.clearTray();
+        //When someone clicks on the tray, bring the main window back on screen.
+        app.tray_icon = Titanium.UI.addTray('img/icon-tray.png', function(e) {
+            var win = Titanium.UI.getMainWindow();
+            win.show();
+            win.unminimize();
         });
         app.tray_status();
     },
@@ -188,26 +257,24 @@ var app = {
      * @param int mode 0 = default (blue), 1 = success (green), 2 = error (red)
      * @param int time number of seconds to show the status before switching back to mode=0. Default = 10 - Notice: The error state won't be set back automatically, if no time is given.
      */
-    tray_status: function(mode, time){
-        Titanium.UI.clearTray();
+    tray_status: function(mode, message, time) {
         var back = '';
-        switch(mode){
+        if (typeof message != 'undefined') message = 'SimpLESS - ' + message; else message = 'SimpLESS';
+
+        switch (mode) {
             case 2:
                 back = '-red';
-            break;
+                break;
             case 1:
                 back = '-green';
-            break;
+                break;
         }
-        Titanium.UI.addTray('img/icon-tray'+back+'.png', function(e){
-            var win = Titanium.UI.getMainWindow();
-            win.show();
-            win.unminimize();
-        });
+        app.tray_icon.setIcon('img/icon-tray' + back + '.png');
+        app.tray_icon.setHint(message);
 
-        if(mode == 1){
-            if(typeof time == 'undefined') time = 10;
-            setTimeout('app.trays_status();', time * 1000);
+        if (mode == 1) {
+            if (typeof time == 'undefined') time = 10;
+            setTimeout('app.tray_status();', time * 1000);
         }
     },
 
@@ -303,6 +370,9 @@ var app = {
      * @param file_object
      */
     index_add: function(file_object) {
+        //With the first file being index, the "restore" button should vanish.
+        $('#restore').remove();
+
         //First, create the checksum of the files filename.
         //We need this checksum to identify our files.
         var checksum = Titanium.Codec.digestToHex(Titanium.Codec.MD5, file_object.toString());
@@ -349,6 +419,7 @@ var app = {
 
         //Okay, now push our new files into the index.
         app.lessfiles.push(elem);
+        app.restore_paths.push(file_object.toString());
     },
 
     /**
@@ -428,12 +499,12 @@ var app = {
         //The compiler has to take the less files object path to find the relative files to it.
         app.compiling_file = indexed_less_file_object;
 
-        try{
+        try {
             app.parser.parse(lesscode, function(err, tree) {
                 if (err) {
                     indexed_less_file_object.compiler_error = err.message.replace(/(on line \d+)/, '<span style="font-weight: bold;">$1</span>');
                     indexed_less_file_object.compile_status = 2;
-                    app.tray_status(2); //Red tray icon
+                    app.tray_status(2, err.message); //Red tray icon
                     return false;
                 }
                 output.touch();
@@ -451,18 +522,18 @@ var app = {
                 }
                 pointer.close();
                 parse_result = true;
-                app.tray_status(1); //green tray icon
+                app.tray_status(1, 'compilation successful'); //green tray icon
                 indexed_less_file_object.compile_status = 1;
             });
         }
-        catch(e){
+        catch(e) {
             parse_result = false;
-            for(var key in e){
+            for (var key in e) {
                 app.debug(key + ' => ' + e[key]);
             }
-            indexed_less_file_object.compiler_error = e.message + ' <span style="font-weight: bold;">on line '+e.line+'</span>';
+            indexed_less_file_object.compiler_error = e.message + ' <span style="font-weight: bold;">on line ' + e.line + '</span>';
             indexed_less_file_object.compile_status = 2;
-            app.tray_status(2); //Red tray icon
+            app.tray_status(2, e.message + ' on line ' + e.line); //Red tray icon
         }
         return parse_result;
     },
@@ -607,7 +678,7 @@ var app = {
         }
     },
 
-    xhr_replacement: function(url, type, callback, errback){
-        
+    xhr_replacement: function(url, type, callback, errback) {
+
     }
 }
