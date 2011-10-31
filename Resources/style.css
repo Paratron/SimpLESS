@@ -146,6 +146,14 @@ li:nth-child(2n){
     color: #bd0808;
 }
 
+.error .info i{
+    color: #565656;
+}
+
+.error .info i span{
+    color: #333;
+}
+
 .success .info{
     color: #08bd27;
 }
@@ -264,17 +272,6 @@ li b{
    border: none !important;
     height: 40px;
     background: url(img/more.png) center no-repeat !important;
-}
-
-#dropbox{
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    opacity: 0;
-    display: none;
-    cursor: default;
 }
 
 #overlay{

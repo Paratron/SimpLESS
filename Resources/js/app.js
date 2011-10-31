@@ -99,7 +99,7 @@ var app = {
             }
         ).click(function(e) {
                 $(this).toggleClass('active');
-                if (!$(this).hasClass('active')) app.show_love = true; else app.show_love = false;
+                if ($(this).hasClass('active')) app.show_love = true; else app.show_love = false;
             });
 
 
@@ -152,12 +152,63 @@ var app = {
         //The crawler thread is started now and will listen to commands.
         app.crawler.start();
 
+        /**
+         * This initializes the send-to-tray mode introduced in 1.2
+         */
+        app.tray_init();
+
         //Great, thats it. So, the app does the following:
         // 1: Switching into Dropmode when loosing focus to wait for file drops
         // 2: Passing the file drops to the crawler (see the observe loop interval in line 71)
         // 3: Checking the indexed files every second for changes
         // 4: When changes have been made compile the LESS files into CSS
         this.debug('Init finished. App is ready.');
+    },
+
+    /**
+     * This function initializes the send-to-tray mode.
+     *
+     */
+    tray_init: function(){
+        //We want to trigger when the app gets minimized to hide the main window
+        var win = Titanium.UI.getMainWindow();
+        win.addEventListener(Titanium.MINIMIZED, function(e){
+            e.preventDefault();
+            win.hide();
+        });
+        //When the main window gets closed, clean up the tray.
+        win.addEventListener(Titanium.CLOSED, function(e){
+           Titanium.UI.clearTray();
+        });
+        app.tray_status();
+    },
+
+    /**
+     * This function changes the tray icon as a status indicator.
+     * @param int mode 0 = default (blue), 1 = success (green), 2 = error (red)
+     * @param int time number of seconds to show the status before switching back to mode=0. Default = 10 - Notice: The error state won't be set back automatically, if no time is given.
+     */
+    tray_status: function(mode, time){
+        Titanium.UI.clearTray();
+        var back = '';
+        switch(mode){
+            case 2:
+                back = '-red';
+            break;
+            case 1:
+                back = '-green';
+            break;
+        }
+        Titanium.UI.addTray('img/icon-tray'+back+'.png', function(e){
+            var win = Titanium.UI.getMainWindow();
+            win.show();
+            win.unminimize();
+        });
+
+        if(mode == 1){
+            if(typeof time == 'undefined') time = 10;
+            setTimeout('app.trays_status();', time * 1000);
+        }
     },
 
     /**
@@ -372,29 +423,47 @@ var app = {
         var output = indexed_less_file_object.outfile;
         var lesscode = input.open().read().toString();
         var parse_result = false;
-        app.parser.parse(lesscode, function(err, tree) {
-            if (err) {
-                indexed_less_file_object.compiler_error = err.message.replace(/(on line \d+)/, '<span style="font-weight: bold;">$1</span>');
-                indexed_less_file_object.compile_status = 2;
-                return true;
+
+        //We have to remember this in case of @include statements.
+        //The compiler has to take the less files object path to find the relative files to it.
+        app.compiling_file = indexed_less_file_object;
+
+        try{
+            app.parser.parse(lesscode, function(err, tree) {
+                if (err) {
+                    indexed_less_file_object.compiler_error = err.message.replace(/(on line \d+)/, '<span style="font-weight: bold;">$1</span>');
+                    indexed_less_file_object.compile_status = 2;
+                    app.tray_status(2); //Red tray icon
+                    return false;
+                }
+                output.touch();
+                output.setWritable();
+                var csscode = tree.toCSS();
+                var pointer = output.open();
+                pointer.open(pointer.MODE_WRITE);
+                try {
+                    if (app.show_love) pointer.write(app.love_message + '\n');
+                    pointer.write(csscode);
+                }
+                catch(e) {
+                    Titanium.API.debug('Error writing css file');
+                    Titanium.API.debug(e.toString());
+                }
+                pointer.close();
+                parse_result = true;
+                app.tray_status(1); //green tray icon
+                indexed_less_file_object.compile_status = 1;
+            });
+        }
+        catch(e){
+            parse_result = false;
+            for(var key in e){
+                app.debug(key + ' => ' + e[key]);
             }
-            output.touch();
-            output.setWritable();
-            var csscode = tree.toCSS();
-            var pointer = output.open();
-            pointer.open(pointer.MODE_WRITE);
-            try {
-                if (app.show_love) pointer.write(app.love_message + '\n');
-                pointer.write(csscode);
-            }
-            catch(e) {
-                Titanium.API.debug('Error writing css file');
-                Titanium.API.debug(e.toString());
-            }
-            pointer.close();
-            parse_result = true;
-            indexed_less_file_object.compile_status = 1;
-        });
+            indexed_less_file_object.compiler_error = e.message + ' <span style="font-weight: bold;">on line '+e.line+'</span>';
+            indexed_less_file_object.compile_status = 2;
+            app.tray_status(2); //Red tray icon
+        }
         return parse_result;
     },
 
@@ -446,7 +515,7 @@ var app = {
         var filedate = new Date(Math.floor(lessfile.infile.modificationTimestamp() / 1000));
 
         //This is a list of all months, since we want to display the month' name instead of the number. 
-        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'];
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
         //Format the time for output.
         var filedate_str = months[filedate.getMonth()] + ' ' + app.dbldigit(filedate.getDate()) + ', ' + filedate.getFullYear();
@@ -484,7 +553,7 @@ var app = {
         }
 
         if (lessfile.compiler_wait) {
-            //CSS file neuer als LESS file...
+            //CSS file newer than LESS file...
             addition = 'warning';
             filedate_str = '<a href="#" class="overwrite">Overwrite</a> <a href="#" class="cancel">Cancel</a>';
             uhr_str = '';
@@ -525,7 +594,7 @@ var app = {
         }
     },
     /**
-     * Gibt eine Datei für den LESS Compiler frei.
+     * Activates a file for the LESS compiler.
      * @param checksum
      */
     overwrite_file: function(checksum) {
@@ -536,5 +605,9 @@ var app = {
                 return true;
             }
         }
+    },
+
+    xhr_replacement: function(url, type, callback, errback){
+        
     }
 }

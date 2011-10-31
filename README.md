@@ -14,6 +14,17 @@ Me not ;)
 So I decided to create a little compiler for LESS that runs on every platform.
 It utilizes the appcelerator titanium platform ( http://appcelerator.com/ ) to achieve this task.
 
+Changelog
+---------
+
+v 1.2
+- implemented a new drag&drop system. Should work much more reliable now.
+- fixed a bug where a space in the filepath prevented simpless from recognizing it.
+- fixed a bug where the "show love" message was displayed when it shouldnt
+- improved compilation error checking
+- improved contrast in the colors of error messages in the UI
+- included LESS parser 1.1.4
+
 
 Download Builds
 ---------------
@@ -28,6 +39,6 @@ Currently I'm thinking about implementing the following features in near future:
 
 - Adding vendor prefixes automatically like prefixer ( http://cssprefixer.appspot.com/ ) does.
 - Adding a css minification function
-
+- adding SASS support
 
 
