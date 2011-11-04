@@ -2618,6 +2618,12 @@ function xhr(url, type, callback, errback) {
 
     //If there is no file ending, LESS assumes you are trying to include a LESS file.
     if(url.substr(-4) != '.css' && url.substr(-5) != '.less') url += '.less';
+    /**
+     * I don't exactly know WHY, but with SOME files this none-existent path prefix is at the beginning of the url.
+     * Just remove it...
+     * Does anyone know more about this?
+     */
+    url = url.replace("app://com.wearekiss.simpless.open/", "");
     var file = app.compiling_file.infile.resolve(url);
     var src = file.open().read().toString();
     callback(src, file.modificationTimestamp());
