@@ -219,17 +219,10 @@ var app = {
         app.check_restore_paths();
 
         //Check if restore data is available.
-        var restoreData = localStorage.getItem('restore');
-        if(typeof restoreData == 'string' && restoreData != '[]'){
-            app.restore_paths = Titanium.JSON.parse(restoreData);
+        if(app.always_restore == false){
             $('#restore').click(function(e){
-                e.preventDefault();
-                $('#restore').remove();
-                var xpath = app.restore_paths;
-                app.restore_paths = [];
-                for(var i in xpath){
-                    app.drop_action(xpath[i]);
-                }
+               	app.restore_previous_session();
+               	$('#restore').remove();
             });
         } else {
             $('#restore').remove();
@@ -252,20 +245,27 @@ var app = {
     },
     
     /**
+     * The restore previous session code in one place, so it's not rewritten in several.
+     */
+    restore_previous_session: function(){
+    	var restoreData = localStorage.getItem('restore');
+        if(typeof restoreData == 'string' && restoreData != '[]'){
+            app.restore_paths = Titanium.JSON.parse(restoreData);
+                var xpath = app.restore_paths;
+                app.restore_paths = [];
+                for(var i in xpath){
+                    app.drop_action(xpath[i]);
+                }
+    	}
+    },
+    
+    /**
      * Check if they enabled always restore.
      */
     check_restore_paths: function(){
-		var restoreData = localStorage.getItem('restore');
-        if(app.always_restore == true && typeof restoreData == 'string' && restoreData != '[]')
+        if(app.always_restore == true)
         {
-        	app.restore_paths = Titanium.JSON.parse(restoreData);
-        	//e.preventDefault();
-            $('#restore').remove();
-            var xpath = app.restore_paths;
-            app.restore_paths = [];
-            for(var i in xpath){
-            	app.drop_action(xpath[i]);
-            }
+        	app.restore_previous_session();
         }
 	},
 	
