@@ -216,6 +216,37 @@ li:nth-child(2n){
     background-position: -267px -38px;
 }
 
+#restore_option{
+	background-position: -265px -38px;
+	position: relative;
+}
+
+#restore_option.active{
+	background-position: -265px -68px;
+}
+
+#restore_option span{
+	position: absolute;
+    display: block;
+    width: 176px;
+    height: 178px;
+    background:  url(img/spritemap.png) left -38px;
+    bottom: 30px;
+    right: -22px;
+    display: none;
+}
+
+#restore_option.active span:after{
+	content: "";
+    display: block;
+    width: 120px;
+    height: 19px;
+    background:  url(img/spritemap.png) -211px -192px;
+    position: absolute;
+    bottom: 17px;
+    left: 27px;
+}
+
 #love{
     background-position: -235px -38px;
     position: relative;

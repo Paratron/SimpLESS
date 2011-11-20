@@ -45,6 +45,11 @@ var app = {
      * This is an simple array of file paths of less objects. They will be stored in localStorage on application exit and can be used to restore the file list on application start.
      */
     restore_paths: [],
+    
+    /**
+     * Always restore previous paths option.
+     */
+    always_restore: false,
 
     /**
      * An instance of the LESS CSS parser from http://lesscss.org
@@ -92,8 +97,9 @@ var app = {
     init: function() {
         this.debug('Hello - debug Mode is on!');
 
-        app.check_update();
-
+        this.check_update();
+		this.always_restore = this.convert_string_tf_to_boolean(localStorage.getItem('always_restore'));
+		
         //First start on a mac? Show some information for the poor user...
         if(Titanium.getPlatform() == 'osx'){
             if(localStorage.getItem('firstRun') != 1){
@@ -111,6 +117,18 @@ var app = {
             $('#zusatz').fadeOut();
         }, 5000);
 
+		//Set the always restore button to proper activity status.
+		if(app.always_restore == true) $('#restore_option').addClass('active'); else $('#restore_option').removeClass('active');
+
+		//If you click the always restore option button, it'll set it to ALWAYS restore.
+		$('#restore_option').click(function(e){
+			$(this).toggleClass('active');
+			if($(this).hasClass('active')) app.always_restore = true; else app.always_restore = false;
+			app.debug("clicked!");
+			app.debug(app.always_restore);
+			localStorage.setItem('always_restore', app.always_restore);
+		});
+		
         //If one hovers over the heart-button, we smoothly fade the tooltip.
         //The variable show_love will be set to advice the compile if he has to set an CSS comment.
         $('#love').hover(
@@ -197,6 +215,8 @@ var app = {
             localStorage.setItem('restore', restore_data);
             Titanium.UI.clearTray();
         });
+        
+        app.check_restore_paths();
 
         //Check if restore data is available.
         var restoreData = localStorage.getItem('restore');
@@ -230,6 +250,37 @@ var app = {
             }
         });
     },
+    
+    /**
+     * Check if they enabled always restore.
+     */
+    check_restore_paths: function(){
+		var restoreData = localStorage.getItem('restore');
+        if(app.always_restore == true && typeof restoreData == 'string' && restoreData != '[]')
+        {
+        	app.restore_paths = Titanium.JSON.parse(restoreData);
+        	//e.preventDefault();
+            $('#restore').remove();
+            var xpath = app.restore_paths;
+            app.restore_paths = [];
+            for(var i in xpath){
+            	app.drop_action(xpath[i]);
+            }
+        }
+	},
+	
+	/**
+	 * Convert string true & false values, to boolean.
+	 */
+	convert_string_tf_to_boolean: function(s){
+		if(s == 'true'){
+			return(true);
+		}
+		else{
+			return(false);
+		}
+	},
+        
 
     /**
      * This function initializes the send-to-tray mode.
