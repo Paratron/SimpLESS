@@ -95,9 +95,9 @@ var app = {
         app.check_update();
 
         //First start on a mac? Show some information for the poor user...
-        if(Titanium.getPlatform() == 'osx'){
-            if(localStorage.getItem('firstRun') != 1){
-                if(confirm('This is your first start of SimpLESS, we will display this message only once:\n\nIf you want to hide this app from the dock, then please read our tutorial on our blog: \n\nhttp://wearekiss.com/blog/simpless-1.2\n\nClick OK to open it in your browser.')){
+        if (Titanium.getPlatform() == 'osx') {
+            if (localStorage.getItem('firstRun') != 1) {
+                if (confirm('This is your first start of SimpLESS, we will display this message only once:\n\nIf you want to hide this app from the dock, then please read our tutorial on our blog: \n\nhttp://wearekiss.com/blog/simpless-1.2\n\nClick OK to open it in your browser.')) {
                     Titanium.Platform.openURL('http://wearekiss.com/blog/simpless-1.2');
                 }
             }
@@ -138,15 +138,15 @@ var app = {
         //Notice: My drop event directly has a files property - no dataTransfer Object, since I just don't need it.
         document.addEventListener('drop', function(e) {
             var path;
-            if(Titanium.getPlatform() == 'linux' && e.files.length > 1){
+            if (Titanium.getPlatform() == 'linux' && e.dataTransfer.files.length > 1) {
                 alert('Due to a bug in the appcelerator framework, only one file/folder can be collected at once. :(');
             }
             for (var i = 0; i < e.files.length; i++) {
                 path = e.files[i].path;
                 //On linux there is some drawback with file dropping: we get an URI encoded string...
-                if(Titanium.getPlatform() == 'linux'){
+                if (Titanium.getPlatform() == 'linux') {
                     path = decodeURI(path.replace('file://', ''));
-                    
+
                 }
                 app.drop_action(path);
             }
@@ -200,14 +200,14 @@ var app = {
 
         //Check if restore data is available.
         var restoreData = localStorage.getItem('restore');
-        if(typeof restoreData == 'string' && restoreData != '[]'){
+        if (typeof restoreData == 'string' && restoreData != '[]') {
             app.restore_paths = Titanium.JSON.parse(restoreData);
-            $('#restore').click(function(e){
+            $('#restore').click(function(e) {
                 e.preventDefault();
                 $('#restore').remove();
                 var xpath = app.restore_paths;
                 app.restore_paths = [];
-                for(var i in xpath){
+                for (var i in xpath) {
                     app.drop_action(xpath[i]);
                 }
             });
@@ -221,10 +221,10 @@ var app = {
     /**
      * Check on the kiss server, if there is an update available.
      */
-    check_update: function(){
-        $.get('http://wearekiss.com/simpless-version.txt', function(response){
-            if(response != Titanium.App.getVersion()){
-                if(confirm('There is an update available under http://wearekiss.com/simpless\n\nClick OK to open the website to download it.')){
+    check_update: function() {
+        $.get('http://wearekiss.com/simpless-version.txt', function(response) {
+            if (response != Titanium.App.getVersion()) {
+                if (confirm('There is an update available under http://wearekiss.com/simpless\n\nClick OK to open the website to download it.')) {
                     Titanium.Platform.openURL('http://wearekiss.com/simpless');
                 }
             }
@@ -285,6 +285,7 @@ var app = {
      */
     debug: function(message) {
         if (!this.debug_mode) return;
+        console.log(message);
         Titanium.API.debug(message);
     },
 
@@ -370,6 +371,7 @@ var app = {
      * @param file_object
      */
     index_add: function(file_object) {
+        this.debug('Adding file to index...');
         //With the first file being index, the "restore" button should vanish.
         $('#restore').remove();
 
@@ -493,6 +495,13 @@ var app = {
         var input = indexed_less_file_object.infile;
         var output = indexed_less_file_object.outfile;
         var lesscode = input.open().read().toString();
+
+        //Okay, we now look if the user doesn't want to minify the file.
+        //Look for this comment: //simpless:!minify
+
+        var minify = true;
+        if(lesscode.search(/simpless\:\!minify/) != -1) minify = false;
+
         var parse_result = false;
 
         //We have to remember this in case of @include statements.
@@ -510,6 +519,10 @@ var app = {
                 output.touch();
                 output.setWritable();
                 var csscode = tree.toCSS();
+                if(minify){
+                    app.debug('Minifying CSS...');
+                    csscode = CleanCSS.process(csscode);
+                }
                 var pointer = output.open();
                 pointer.open(pointer.MODE_WRITE);
                 try {
@@ -535,6 +548,8 @@ var app = {
             indexed_less_file_object.compile_status = 2;
             app.tray_status(2, e.message + ' on line ' + e.line); //Red tray icon
         }
+
+
         return parse_result;
     },
 
@@ -676,9 +691,5 @@ var app = {
                 return true;
             }
         }
-    },
-
-    xhr_replacement: function(url, type, callback, errback) {
-
     }
 }
