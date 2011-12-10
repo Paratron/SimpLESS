@@ -194,14 +194,18 @@ var app = {
         var win = Titanium.UI.getMainWindow();
         win.addEventListener(Titanium.CLOSED, function(e) {
             var restore_data = Titanium.JSON.stringify(app.restore_paths);
+            if($('#restore:visible').size()) restore_data = [];
             localStorage.setItem('restore', restore_data);
             Titanium.UI.clearTray();
         });
 
         //Check if restore data is available.
         var restoreData = localStorage.getItem('restore');
-        if (typeof restoreData == 'string' && restoreData != '[]') {
+        if (typeof restoreData == 'string' && restoreData != '[]' && restoreData != '') {
             app.restore_paths = Titanium.JSON.parse(restoreData);
+            if(!app.restore_paths.length){
+                $('#restore').remove();
+            }
             $('#restore').click(function(e) {
                 e.preventDefault();
                 $('#restore').remove();
@@ -362,6 +366,11 @@ var app = {
         }
     },
 
+    clearRestore: function(){
+      app.restore_paths = [];
+      $('#restore').remove();
+    },
+
     /**
      * This function takes a file object of a LESS file and does the following:
      * 1: Checking if the file is already indexed
@@ -373,7 +382,11 @@ var app = {
     index_add: function(file_object) {
         this.debug('Adding file to index...');
         //With the first file being index, the "restore" button should vanish.
-        $('#restore').remove();
+
+        if(app.clearRestore){
+            app.clearRestore();
+            app.clearRestore = false;
+        }
 
         //First, create the checksum of the files filename.
         //We need this checksum to identify our files.
