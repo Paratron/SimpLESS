@@ -1,4 +1,4 @@
-SimpLESS Compiler 1.2
+SimpLESS Compiler 1.3
 =====================
 
 Description
@@ -16,6 +16,18 @@ It utilizes the appcelerator titanium platform ( http://appcelerator.com/ ) to a
 
 Changelog
 ---------
+
+v 1.3
+- implemented CSS minification (thanks to: https://github.com/GoalSmashers/clean-css )
+  If you don't want a css file to be minified, place the following comment in your less file: //simpless:!minify
+- added a button for manual recompilation of files
+- added a button for removing files from the list
+- fixed a bug where compiling an empty less file crashes the program
+- fixed a bug in the quit-restore system
+- removed the restore button. Restoring now happens by default.
+- fixed a bug where urls in stylesheets got messed up with random "app://com.wearekiss.simpless.open/" insertions.
+- included LESS parser 1.1.6
+
 
 v 1.2
 
@@ -35,6 +47,7 @@ Download Builds
 ---------------
 
 Download builds for every platform under http://wearekiss.com/simpless/
+Notice: 1.3 builds not available yet!
 
 
 Planned Features
@@ -43,7 +56,6 @@ Planned Features
 Currently I'm thinking about implementing the following features in near future:
 
 - Adding vendor prefixes automatically like prefixer ( http://cssprefixer.appspot.com/ ) does.
-- Adding a css minification function
 - adding SASS support
 
 
