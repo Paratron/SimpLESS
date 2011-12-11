@@ -98,7 +98,7 @@ li:nth-child(2n){
     border-bottom:  #dec46f solid 1px;
 }
 
-.warning .cancel *, .warning .overwrite *, #love, #help, #comment{
+.warning .cancel *, .warning .overwrite *, #love, #help, #comment, button{
     cursor: pointer !important;
 }
 
@@ -309,4 +309,29 @@ li b{
     position: absolute;
     top: 50%;
     left: 50%;
+}
+
+button{
+    background:  transparent;
+    border:  none;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background:  url(img/spritemap.png);
+    z-index: 2000;
+}
+
+.recompile{
+    margin-left: 5px;
+    background-position: -210px -99px;
+}
+.recompile:hover{
+    background-position: -189px -99px;
+}
+
+.remove{
+    background-position: -209px -119px;
+}
+.remove:hover{
+    background-position: -188px -119px;
 }

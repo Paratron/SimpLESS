@@ -9,7 +9,7 @@ var app = {
     /**
      * If the app is in debug mode, messages will be posted to the console window.
      */
-    debug_mode: true,
+    debug_mode: false,
 
     /**
      * Does the compiler have to put a comment in front of the compiled css files?
@@ -84,6 +84,17 @@ var app = {
         }
     },
 
+    /**
+     * Updates the restore data to keep the file list even when the app is quit.
+     */
+    update_restore: function() {
+        var restore = [];
+        for (var key in app.lessfiles) {
+            restore.push(app.lessfiles[key].infile.toString());
+        }
+        app.restore_paths = restore;
+        localStorage.setItem('restore', Titanium.JSON.stringify(restore));
+    },
 
     /**
      * Doing initial warmup.
@@ -164,6 +175,35 @@ var app = {
         // =========================================================================================
         //Generic Listeners
 
+        //Listening to the Recompile and Remove buttons
+        $('button').live('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var element_id = $(this).parent().parent().attr('rel');
+            var lessfile = null;
+            var len = app.lessfiles.length;
+            for (var i = 0; i < len; i += 1) {
+                if (app.lessfiles[i].inchecksum == element_id) {
+                    lessfile = app.lessfiles[i];
+                    break;
+                }
+            }
+
+
+            if (lessfile == null) {
+                return;
+            }
+
+            switch (this.className) {
+                case 'recompile':
+                    app.compile(lessfile);
+                    break;
+                case 'remove':
+                    app.lessfiles.splice(i, 1);
+                    app.update_restore();
+            }
+            app.list_update();
+        });
         //Overwrite and Cancel are used in the case a CSS file is newer then its LESS source.
 
         //Click here to say: YES, please overwrite my CSS files.
@@ -179,12 +219,6 @@ var app = {
             app.cancel_file(checksum);
         });
 
-
-        //We create a seperate thread now to crawl through directories when its necessary.
-        app.crawler = Titanium.Worker.createWorker('workers/crawl.js');
-        //The crawler thread is started now and will listen to commands.
-        app.crawler.start();
-
         /**
          * This initializes the send-to-tray mode introduced in 1.2
          */
@@ -193,9 +227,6 @@ var app = {
         //When the main window gets closed, clean up.
         var win = Titanium.UI.getMainWindow();
         win.addEventListener(Titanium.CLOSED, function(e) {
-            var restore_data = Titanium.JSON.stringify(app.restore_paths);
-            if($('#restore:visible').size()) restore_data = [];
-            localStorage.setItem('restore', restore_data);
             Titanium.UI.clearTray();
         });
 
@@ -203,20 +234,9 @@ var app = {
         var restoreData = localStorage.getItem('restore');
         if (typeof restoreData == 'string' && restoreData != '[]' && restoreData != '') {
             app.restore_paths = Titanium.JSON.parse(restoreData);
-            if(!app.restore_paths.length){
-                $('#restore').remove();
+            for (var i in app.restore_paths) {
+                app.drop_action(app.restore_paths[i]);
             }
-            $('#restore').click(function(e) {
-                e.preventDefault();
-                $('#restore').remove();
-                var xpath = app.restore_paths;
-                app.restore_paths = [];
-                for (var i in xpath) {
-                    app.drop_action(xpath[i]);
-                }
-            });
-        } else {
-            $('#restore').remove();
         }
 
         this.debug('Init finished. App is ready.');
@@ -322,6 +342,7 @@ var app = {
 
                 //Update the timestamp of the LESS file object in the index.
                 app.lessfiles[i].instamp = lf.infile.modificationTimestamp();
+                app.lessfiles[i].outstamp = lf.outfile.modificationTimestamp();
                 //Now redraw the file list in the UI to make changes visible.
                 app.list_update();
             }
@@ -338,6 +359,7 @@ var app = {
             app.debug(filepath);
 
             var file_obj = Titanium.Filesystem.getFile(filepath.toString());
+            if (!file_obj.exists()) return;
 
             if (file_obj.isFile()) {
                 //Okay, we have a single file here. Is it a LESS file?
@@ -366,11 +388,6 @@ var app = {
         }
     },
 
-    clearRestore: function(){
-      app.restore_paths = [];
-      $('#restore').remove();
-    },
-
     /**
      * This function takes a file object of a LESS file and does the following:
      * 1: Checking if the file is already indexed
@@ -382,11 +399,6 @@ var app = {
     index_add: function(file_object) {
         this.debug('Adding file to index...');
         //With the first file being index, the "restore" button should vanish.
-
-        if(app.clearRestore){
-            app.clearRestore();
-            app.clearRestore = false;
-        }
 
         //First, create the checksum of the files filename.
         //We need this checksum to identify our files.
@@ -403,12 +415,16 @@ var app = {
         //So then lets try to find out where the matching CSS file to our LESS file is located - if there is any.
         //The function returns us a ready file object.
         var cssfile_path_relative = app.find_css_match(file_object);
-        var cssfile = file_object.resolve(cssfile_path_relative);
+        var cssfile = file_object.parent().resolve(cssfile_path_relative);
+
 
         //We initialize the timestamp for the output file with 0 and update it if the file really exists.
         //The timestamp is needed for the app to decide if it has to recompile files.
         var the_outstamp = 0;
-        if (cssfile.exists()) the_outstamp = Number(cssfile.modificationTimestamp());
+        if (cssfile.exists()) {
+            the_outstamp = Number(cssfile.modificationTimestamp());
+            cssfile.touch();
+        }
 
         //Now we create the LESS object to store in our index.
         var elem = {
@@ -425,7 +441,7 @@ var app = {
 
         //Is the timestamp of the CSS file newer than the timestamp of the LESS file?
         //If so, tell the compiler to not overwrite the CSS until the user decided what to do.
-
+        elem.compiler_wait = false;
         if (cssfile.exists()) {
             var di = new Date(elem.instamp);
             var doo = new Date(elem.outstamp);
@@ -434,7 +450,7 @@ var app = {
 
         //Okay, now push our new files into the index.
         app.lessfiles.push(elem);
-        app.restore_paths.push(file_object.toString());
+        app.update_restore();
     },
 
     /**
@@ -481,7 +497,7 @@ var app = {
 
         //Attempt 1:
         // ../css/[NAME].css;
-        test = less_file_object.resolve('..' + s + 'css' + s);
+        test = less_file_object.parent().resolve('..' + s + 'css' + s);
         if (test.exists() && test.isDirectory()) {
             return '..' + s + 'css' + s + filename + '.css';
         }
@@ -489,14 +505,14 @@ var app = {
 
         //Attempt 2:
         // ./css/[NAME].css;
-        test = less_file_object.resolve('..' + s + 'css' + s);
+        test = less_file_object.parent().resolve('..' + s + 'css' + s);
         if (test.exists() && test.isDirectory()) {
-            return 'css' + s + filename + '.css';
+            return '..' + s + 'css' + s + filename + '.css';
         }
 
         //Attempt 3:
         // ./[NAME].css;
-        return filename + '.css';
+        return './' + filename + '.css';
     },
 
     /**
@@ -507,13 +523,16 @@ var app = {
         if (indexed_less_file_object.compiler_wait) return;
         var input = indexed_less_file_object.infile;
         var output = indexed_less_file_object.outfile;
-        var lesscode = input.open().read().toString();
+        var lesscode = '';
+        if (input.size()) {
+            lesscode = input.open().read().toString();
+        }
 
         //Okay, we now look if the user doesn't want to minify the file.
         //Look for this comment: //simpless:!minify
 
         var minify = true;
-        if(lesscode.search(/simpless\:\!minify/) != -1) minify = false;
+        if (lesscode.search(/simpless\:\!minify/) != -1) minify = false;
 
         var parse_result = false;
 
@@ -532,7 +551,7 @@ var app = {
                 output.touch();
                 output.setWritable();
                 var csscode = tree.toCSS();
-                if(minify){
+                if (minify) {
                     app.debug('Minifying CSS...');
                     csscode = CleanCSS.process(csscode);
                 }
@@ -580,7 +599,12 @@ var app = {
         $('#list').children('li').remove();
 
         //If there are no indexed less files, we have nothing to render.
-        if (!app.lessfiles.length) return;
+        if (!app.lessfiles.length) {
+            $('body').addClass('welcome');
+            return;
+        } else {
+            $('body').removeClass('welcome');
+        }
 
         //Now render every indexed LESS file.
         for (var i = 0; i < app.lessfiles.length; i++) {
@@ -611,7 +635,12 @@ var app = {
         var filename = lessfile.infile.nativePath().split(Titanium.Filesystem.getSeparator()).pop();
 
         //We need the modification timestamp of the file.
-        var filedate = new Date(Math.floor(lessfile.infile.modificationTimestamp() / 1000));
+        var value = 0;
+        if (lessfile.outfile.exists()) {
+            var value = lessfile.outfile.modificationTimestamp() / 1000;
+        }
+
+        var filedate = new Date(Math.floor(value));
 
         //This is a list of all months, since we want to display the month' name instead of the number. 
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -661,8 +690,13 @@ var app = {
             subline = parts.pop() + ' is more recent than the LESS file!';
         }
 
+        if (value == 0) {
+            filedate_str = 'never compiled';
+            uhr_str = '';
+        }
+
         if (lessfile.compile_status == 2) uhr_str = lessfile.compiler_error;
-        var html = '<li rel="' + lessfile.inchecksum + '" class="' + lessfile.inchecksum + ' ' + addition + '"><b>' + filename + '</b><span class="path">' + subline + '</span><span class="info">' + filedate_str + '<i>' + uhr_str + '</i></span></li>';
+        var html = '<li rel="' + lessfile.inchecksum + '" class="' + lessfile.inchecksum + ' ' + addition + '"><b>' + filename + ' <button title="Recompile now" class="recompile"> </button> <button title="Remove from list" class="remove"> </button></b><span class="path">' + subline + '</span><span class="info">' + filedate_str + '<i>' + uhr_str + '</i></span></li>';
         $('body').removeClass('welcome');
         $('#list').append(html);
     },
