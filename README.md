@@ -18,6 +18,7 @@ Changelog
 ---------
 
 v 1.3
+
 - implemented CSS minification (thanks to: https://github.com/GoalSmashers/clean-css )
   If you don't want a css file to be minified, place the following comment in your less file: //simpless:!minify
 - added a button for manual recompilation of files
@@ -47,6 +48,7 @@ Download Builds
 ---------------
 
 Download builds for every platform under http://wearekiss.com/simpless/
+
 Notice: 1.3 builds not available yet!
 
 

@@ -9,7 +9,7 @@ var app = {
     /**
      * If the app is in debug mode, messages will be posted to the console window.
      */
-    debug_mode: false,
+    debug_mode: true,
 
     /**
      * Does the compiler have to put a comment in front of the compiled css files?
@@ -49,7 +49,7 @@ var app = {
     /**
      * An instance of the LESS CSS parser from http://lesscss.org
      */
-    parser: new (less.Parser),
+    parser: new less.Parser(),
 
     ti_filedrop: {
         bind_object: null,
@@ -543,6 +543,7 @@ var app = {
         try {
             app.parser.parse(lesscode, function(err, tree) {
                 if (err) {
+
                     indexed_less_file_object.compiler_error = err.message.replace(/(on line \d+)/, '<span style="font-weight: bold;">$1</span>');
                     indexed_less_file_object.compile_status = 2;
                     app.tray_status(2, err.message); //Red tray icon

@@ -2548,7 +2548,9 @@ tree.URL = function (val, paths) {
     } else {
         // Add the base path if the URL is relative and we are in the browser
         if (typeof(window) !== 'undefined' && !/^(?:https?:\/\/|file:\/\/|data:|\/)/.test(val.value) && paths.length > 0) {
-            val.value = paths[0] + (val.value.charAt(0) === '/' ? val.value.slice(1) : val.value);
+            //@TODO: remove paths
+            val.value = (val.value.charAt(0) === '/' ? val.value.slice(1) : val.value);
+            //val.value = paths[0] + (val.value.charAt(0) === '/' ? val.value.slice(1) : val.value);
         }
         this.value = val;
         this.paths = paths;
@@ -2852,13 +2854,10 @@ function createCSS(styles, sheet, lastModified) {
 function xhr(url, type, callback, errback) {
     //If there is no file ending, LESS assumes you are trying to include a LESS file.
     if(url.substr(-4) != '.css' && url.substr(-5) != '.less') url += '.less';
-    /**
-     * I don't exactly know WHY, but with SOME files this none-existent path prefix is at the beginning of the url.
-     * Just remove it...
-     * Does anyone know more about this?
-     */
-    url = url.replace("app://com.wearekiss.simpless.open/", "");
-    var file = app.compiling_file.infile.resolve(url);
+    app.debug('Import url: '+url);
+    app.debug('Parent of current file: '+app.compiling_file.infile.parent().toString());
+    var file = app.compiling_file.infile.parent().resolve(url);
+    app.debug('Resolved Path: '+file.toString());
     var src = file.open().read().toString();
     callback(src, file.modificationTimestamp());
 }
