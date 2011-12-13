@@ -322,17 +322,39 @@ var app = {
         if (! app.lessfiles.length) return;
 
         //Variable to keep the current lessfile in the loop.
-        var lf;
+        var lf,
+            do_compile,
+            i,
+            j,
+            c,
+            len;
 
         //Loop through all LESS files in the index - we have to check them all.
-        for (var i = 0; i < app.lessfiles.length; i++) {
+        for (i = 0; i < app.lessfiles.length; i++) {
             //Put the current lessfile here, since the variable name is shorter.
             lf = app.lessfiles[i];
 
             app.debug('Observing: ' + lf.infile);
 
+            do_compile = false;
+
+            if(lf.infile.modificationTimestamp() != lf.instamp) do_compile = true;
+
+            if(!do_compile && lf.constraints.length){
+                c = lf.constraints;
+                len = c.length;
+                for(j = 0; j < len;j++){
+                    if(c[j].obj.modificationTimestamp() != c[j].last_stamp){
+                        app.debug('Constrained matched!');
+                        c[j].last_stamp = c[j].obj.modificationTimestamp();
+                        do_compile = true;
+                        break;
+                    }
+                }
+            }
+
             //If the file is not market as "don't compile" and the modification stamp has changed, then recompile!
-            if (! lf.compiler_wait && lf.infile.modificationTimestamp() != lf.instamp) {
+            if (! lf.compiler_wait && do_compile) {
                 /*
                  The compiler will parse the LESS file and put the results in the according CSS file.
                  If there is an error, the error will be stored in the LESS file object and later be rendered by app.list_update()
@@ -426,6 +448,26 @@ var app = {
             cssfile.touch();
         }
 
+        //We have to load the source and parse search for any imports!
+        var source = file_object.open().read().toString(),
+            re = /@import.+?"(.+?)"/g,
+            result,
+            constraints = [],
+            path_obj;
+
+        while(result = re.exec(source)){
+            path_obj = file_object.parent().resolve(result[1]);
+            if(path_obj.exists()){
+                constraints.push({
+                    last_stamp: path_obj.modificationTimestamp(),
+                    title: result[1],
+                    obj: path_obj
+                });
+            }
+        }
+
+        console.log(constraints);
+
         //Now we create the LESS object to store in our index.
         var elem = {
             inchecksum: checksum,
@@ -436,7 +478,8 @@ var app = {
             outstamp: the_outstamp, //Time, the output file has been changed the last time.
             compile_status: 0, //0 = neutral, 1 = success, 2 = fault
             compiler_error: '',
-            compiler_wait: false //Should the compiler ignore this file? Will be determined below.
+            compiler_wait: false, //Should the compiler ignore this file? Will be determined below.
+            constraints: constraints //Any compiling constraints to other LESS files.
         };
 
         //Is the timestamp of the CSS file newer than the timestamp of the LESS file?
@@ -697,7 +740,18 @@ var app = {
         }
 
         if (lessfile.compile_status == 2) uhr_str = lessfile.compiler_error;
-        var html = '<li rel="' + lessfile.inchecksum + '" class="' + lessfile.inchecksum + ' ' + addition + '"><b>' + filename + ' <button title="Recompile now" class="recompile"> </button> <button title="Remove from list" class="remove"> </button></b><span class="path">' + subline + '</span><span class="info">' + filedate_str + '<i>' + uhr_str + '</i></span></li>';
+        var title = '';
+        var constrain_insert = '';
+        if(lessfile.constraints.length){
+            title = 'Compilation is constrained to multiple files:\n\n';
+            var c = lessfile.constraints,
+                len = c.length;
+            for(var i = 0; i < len; i++){
+                title += c[i].title+'\n';
+            }
+            constrain_insert = '<i class="constrained" title="'+title+'"></i>';
+        }
+        var html = '<li rel="' + lessfile.inchecksum + '" class="' + lessfile.inchecksum + ' ' + addition + '"><b>' + constrain_insert + filename + ' <button title="Recompile now" class="recompile"> </button> <button title="Remove from list" class="remove"> </button></b><span class="path">' + subline + '</span><span class="info">' + filedate_str + '<i>' + uhr_str + '</i></span></li>';
         $('body').removeClass('welcome');
         $('#list').append(html);
     },

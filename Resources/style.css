@@ -321,6 +321,10 @@ button{
     z-index: 2000;
 }
 
+.warning button{
+    display: none;
+}
+
 .recompile{
     margin-left: 5px;
     background-position: -210px -99px;
@@ -334,4 +338,13 @@ button{
 }
 .remove:hover{
     background-position: -188px -119px;
+}
+.constrained{
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 3px;
+    background: url(img/spritemap.png) no-repeat -189px -144px;
+    vertical-align: middle;
 }
