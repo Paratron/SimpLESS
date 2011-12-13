@@ -582,11 +582,11 @@ var app = {
         //We have to remember this in case of @include statements.
         //The compiler has to take the less files object path to find the relative files to it.
         app.compiling_file = indexed_less_file_object;
+        app.import_error = null;
 
         try {
             app.parser.parse(lesscode, function(err, tree) {
                 if (err) {
-
                     indexed_less_file_object.compiler_error = err.message.replace(/(on line \d+)/, '<span style="font-weight: bold;">$1</span>');
                     indexed_less_file_object.compile_status = 2;
                     app.tray_status(2, err.message); //Red tray icon
@@ -594,7 +594,11 @@ var app = {
                 }
                 output.touch();
                 output.setWritable();
+                console.log('!!!');
                 var csscode = tree.toCSS();
+                console.log(csscode);
+                console.log(tree);
+                console.log('...');
                 if (minify) {
                     app.debug('Minifying CSS...');
                     csscode = CleanCSS.process(csscode);
@@ -625,8 +629,16 @@ var app = {
             app.tray_status(2, e.message + ' on line ' + e.line); //Red tray icon
         }
 
-
         return parse_result;
+    },
+
+    import_error_func: function(e){
+        var err = e,
+            indexed_less_file_object = app.compiling_file;
+        indexed_less_file_object.compiler_error = err.message.replace(/(on line \d+)/, ' in '+e.filename+' <span style="font-weight: bold;">$1</span>');
+        indexed_less_file_object.compile_status = 2;
+        app.tray_status(2, err.message.replace(/(on line \d+)/, ' in '+e.filename+' $1')); //Red tray icon
+        app.list_update();
     },
 
     /**

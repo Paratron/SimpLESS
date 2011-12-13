@@ -28,6 +28,7 @@ v 1.3
 - removed the restore button. Restoring now happens by default.
 - fixed a bug where urls in stylesheets got messed up with random "app://com.wearekiss.simpless.open/" insertions.
 - included LESS parser 1.1.6
+- addded support for backwards @import. Compilation is triggered, if imported files are changed.
 
 
 v 1.2
