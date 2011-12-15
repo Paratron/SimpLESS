@@ -567,6 +567,7 @@ var app = {
         var input = indexed_less_file_object.infile;
         var output = indexed_less_file_object.outfile;
         var lesscode = '';
+        app.debug('Loading source');
         if (input.size()) {
             lesscode = input.open().read().toString();
         }
@@ -584,21 +585,24 @@ var app = {
         app.compiling_file = indexed_less_file_object;
         app.import_error = null;
 
+        indexed_less_file_object.compile_status = 0;
+        indexed_less_file_object.compiler_error = '';
+
+        app.debug('Passing Data to the parser (Data size:'+lesscode.length+')');
         try {
             app.parser.parse(lesscode, function(err, tree) {
+                app.debug('Parser returned result');
                 if (err) {
+                    app.debug('Result was an error');
                     indexed_less_file_object.compiler_error = err.message.replace(/(on line \d+)/, '<span style="font-weight: bold;">$1</span>');
                     indexed_less_file_object.compile_status = 2;
                     app.tray_status(2, err.message); //Red tray icon
                     return false;
                 }
+                app.debug('Result seems to be fine');
                 output.touch();
                 output.setWritable();
-                console.log('!!!');
                 var csscode = tree.toCSS();
-                console.log(csscode);
-                console.log(tree);
-                console.log('...');
                 if (minify) {
                     app.debug('Minifying CSS...');
                     csscode = CleanCSS.process(csscode);
@@ -620,6 +624,7 @@ var app = {
             });
         }
         catch(e) {
+            app.debug('Got an parse error');
             parse_result = false;
             for (var key in e) {
                 app.debug(key + ' => ' + e[key]);
@@ -635,10 +640,12 @@ var app = {
     import_error_func: function(e){
         var err = e,
             indexed_less_file_object = app.compiling_file;
-        indexed_less_file_object.compiler_error = err.message.replace(/(on line \d+)/, ' in '+e.filename+' <span style="font-weight: bold;">$1</span>');
-        indexed_less_file_object.compile_status = 2;
+            indexed_less_file_object.compiler_error = err.message.replace(/(on line \d+)/, ' in '+e.filename+' <span style="font-weight: bold;">$1</span>');
+            indexed_less_file_object.compile_status = 2;
         app.tray_status(2, err.message.replace(/(on line \d+)/, ' in '+e.filename+' $1')); //Red tray icon
         app.list_update();
+        //Don't ask me why, but when an error happens in imported files, the parser got stuck.
+        app.parser = new less.Parser();
     },
 
     /**

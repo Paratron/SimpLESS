@@ -29,6 +29,7 @@ v 1.3
 - fixed a bug where urls in stylesheets got messed up with random "app://com.wearekiss.simpless.open/" insertions.
 - included LESS parser 1.1.6
 - addded support for backwards @import. Compilation is triggered, if imported files are changed.
+- capturing compiling errors in imported files now.
 
 
 v 1.2
