@@ -410,6 +410,30 @@ var app = {
         }
     },
 
+    find_constraints: function(file_object){
+        app.debug('Finding constraints for: '+file_object);
+        var source = file_object.open().read().toString(),
+            parent = fixfile(file_object.parent()),
+            re = /@import.+?"(.+?)"/g,
+            result,
+            constraints = [],
+            path_obj;
+
+        while (result = re.exec(source)) {
+            path_obj = parent.grep(result[1]);
+            if (path_obj.exists()) {
+                constraints.push({
+                    last_stamp: path_obj.modificationTimestamp(),
+                    title: result[1],
+                    obj: path_obj
+                });
+                constraints = constraints.concat(app.find_constraints(path_obj));
+            }
+        }
+
+        return constraints;
+    },
+
     /**
      * This function takes a file object of a LESS file and does the following:
      * 1: Checking if the file is already indexed
@@ -450,22 +474,7 @@ var app = {
         }
 
         //We have to load the source and parse search for any imports!
-        var source = file_object.open().read().toString(),
-            re = /@import.+?"(.+?)"/g,
-            result,
-            constraints = [],
-            path_obj;
-
-        while (result = re.exec(source)) {
-            path_obj = parent.grep(result[1]);
-            if (path_obj.exists()) {
-                constraints.push({
-                    last_stamp: path_obj.modificationTimestamp(),
-                    title: result[1],
-                    obj: path_obj
-                });
-            }
-        }
+        var constraints = app.find_constraints(file_object);
 
         console.log(constraints);
 

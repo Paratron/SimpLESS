@@ -2853,6 +2853,7 @@ function createCSS(styles, sheet, lastModified) {
 
 function xhr(url, type, callback, errback) {
     //If there is no file ending, LESS assumes you are trying to include a LESS file.
+    url = url.replace(/app:\/\/com.wearekiss.simpless.open\//g, '');
     app.debug('LESS XHR: '+url);
     if(url.substr(-4) != '.css' && url.substr(-5) != '.less') url += '.less';
     var file = fixfile(app.compiling_file.infile.parent()).grep(url);
