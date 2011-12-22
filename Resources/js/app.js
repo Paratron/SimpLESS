@@ -233,10 +233,13 @@ var app = {
         //Check if restore data is available.
         var restoreData = localStorage.getItem('restore');
         if (typeof restoreData == 'string' && restoreData != '[]' && restoreData != '') {
-            app.restore_paths = Titanium.JSON.parse(restoreData);
-            for (var i in app.restore_paths) {
-                app.drop_action(app.restore_paths[i]);
+            var restore_paths = Titanium.JSON.parse(restoreData);
+            for (var i in restore_paths) {
+                app.drop_action(restore_paths[i]);
             }
+            setTimeout(function(){
+                app.list_update();
+            }, 500);
         }
 
         this.debug('Init finished. App is ready.');
@@ -413,7 +416,7 @@ var app = {
     find_constraints: function(file_object){
         app.debug('Finding constraints for: '+file_object);
         
-        if(!file_object.size){
+        if(!file_object.size()){
             app.debug('File is empty - stopping search for constraints');
             return [];
         }
