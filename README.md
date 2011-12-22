@@ -30,6 +30,7 @@ v 1.3
 - included LESS parser 1.1.6
 - addded support for backwards @import. Compilation is triggered, if imported files are changed.
 - capturing compiling errors in imported files now.
+- fixed weird file path problems in appcelerator titanium
 
 
 v 1.2
@@ -50,8 +51,6 @@ Download Builds
 ---------------
 
 Download builds for every platform under http://wearekiss.com/simpless/
-
-Notice: 1.3 builds not available yet!
 
 
 Planned Features
