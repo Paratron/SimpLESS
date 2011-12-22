@@ -338,13 +338,13 @@ var app = {
 
             do_compile = false;
 
-            if(lf.infile.modificationTimestamp() != lf.instamp) do_compile = true;
+            if (lf.infile.modificationTimestamp() != lf.instamp) do_compile = true;
 
-            if(!do_compile && lf.constraints.length){
+            if (!do_compile && lf.constraints.length) {
                 c = lf.constraints;
                 len = c.length;
-                for(j = 0; j < len;j++){
-                    if(c[j].obj.modificationTimestamp() != c[j].last_stamp){
+                for (j = 0; j < len; j++) {
+                    if (c[j].obj.modificationTimestamp() != c[j].last_stamp) {
                         app.debug('Constrained matched!');
                         c[j].last_stamp = c[j].obj.modificationTimestamp();
                         do_compile = true;
@@ -420,6 +420,7 @@ var app = {
      */
     index_add: function(file_object) {
         this.debug('Adding file to index...');
+        var parent = fixfile(file_object.parent());
         //With the first file being index, the "restore" button should vanish.
 
         //First, create the checksum of the files filename.
@@ -437,7 +438,7 @@ var app = {
         //So then lets try to find out where the matching CSS file to our LESS file is located - if there is any.
         //The function returns us a ready file object.
         var cssfile_path_relative = app.find_css_match(file_object);
-        var cssfile = file_object.parent().resolve(cssfile_path_relative);
+        var cssfile = parent.grep(cssfile_path_relative);
 
 
         //We initialize the timestamp for the output file with 0 and update it if the file really exists.
@@ -455,9 +456,9 @@ var app = {
             constraints = [],
             path_obj;
 
-        while(result = re.exec(source)){
-            path_obj = file_object.parent().resolve(result[1]);
-            if(path_obj.exists()){
+        while (result = re.exec(source)) {
+            path_obj = parent.grep(result[1]);
+            if (path_obj.exists()) {
                 constraints.push({
                     last_stamp: path_obj.modificationTimestamp(),
                     title: result[1],
@@ -529,7 +530,8 @@ var app = {
      */
     find_css_match: function(less_file_object) {
         //Generic variable to test if a css file is there.
-        var test = null;
+        var test = null,
+            parent = fixfile(less_file_object.parent());
         //The current operating systems' path seperator
         var s = Titanium.Filesystem.getSeparator();
 
@@ -542,27 +544,27 @@ var app = {
          * This is the greatest bullshit of all times.
          * parent() or resolve('../') actually goes two folders upwards -_-
          */
-        var parent = less_file_object.parent();
-        var parentname = parent.nativePath().split(s).pop();
+        var parent = Titanium.Filesystem.getFile(less_file_object.resolve('./') + '/');
+        fixfile(parent);
 
         //Attempt 1:
         // ../css/[NAME].css;
-        test = parent.resolve(parentname+s+'..'+s+'css'+s);
+        test = parent.grep('..' + s + 'css' + s);
         if (test.exists() && test.isDirectory()) {
-            return parentname+s+'..' + s + 'css' + s + filename + '.css';
+            return '..'+s+'css' + s + filename + '.css';
         }
 
 
         //Attempt 2:
         // ./css/[NAME].css;
-        test = parent.resolve(parentname+s+'css' + s);
+        test = parent.grep('.'+s+'css' + s);
         if (test.exists() && test.isDirectory()) {
-            return parentname+s+'..' + s + 'css' + s + filename + '.css';
+            return '.'+s+'css' + s + filename + '.css';
         }
 
         //Attempt 3:
         // ./[NAME].css;
-        return parentname+s+ filename + '.css';
+        return '.'+s+filename + '.css';
     },
 
     /**
@@ -595,7 +597,7 @@ var app = {
         indexed_less_file_object.compile_status = 0;
         indexed_less_file_object.compiler_error = '';
 
-        app.debug('Passing Data to the parser (Data size:'+lesscode.length+')');
+        app.debug('Passing Data to the parser (Data size:' + lesscode.length + ')');
         try {
             app.parser.parse(lesscode, function(err, tree) {
                 app.debug('Parser returned result');
@@ -644,12 +646,12 @@ var app = {
         return parse_result;
     },
 
-    import_error_func: function(e){
+    import_error_func: function(e) {
         var err = e,
             indexed_less_file_object = app.compiling_file;
-            indexed_less_file_object.compiler_error = err.message.replace(/(on line \d+)/, ' in '+e.filename+' <span style="font-weight: bold;">$1</span>');
-            indexed_less_file_object.compile_status = 2;
-        app.tray_status(2, err.message.replace(/(on line \d+)/, ' in '+e.filename+' $1')); //Red tray icon
+        indexed_less_file_object.compiler_error = err.message.replace(/(on line \d+)/, ' in ' + e.filename + ' <span style="font-weight: bold;">$1</span>');
+        indexed_less_file_object.compile_status = 2;
+        app.tray_status(2, err.message.replace(/(on line \d+)/, ' in ' + e.filename + ' $1')); //Red tray icon
         app.list_update();
         //Don't ask me why, but when an error happens in imported files, the parser got stuck.
         app.parser = new less.Parser();
@@ -768,14 +770,14 @@ var app = {
         if (lessfile.compile_status == 2) uhr_str = lessfile.compiler_error;
         var title = '';
         var constrain_insert = '';
-        if(lessfile.constraints.length){
+        if (lessfile.constraints.length) {
             title = 'Compilation is constrained to multiple files:\n\n';
             var c = lessfile.constraints,
                 len = c.length;
-            for(var i = 0; i < len; i++){
-                title += c[i].title+'\n';
+            for (var i = 0; i < len; i++) {
+                title += c[i].title + '\n';
             }
-            constrain_insert = '<i class="constrained" title="'+title+'"></i>';
+            constrain_insert = '<i class="constrained" title="' + title + '"></i>';
         }
         var html = '<li rel="' + lessfile.inchecksum + '" class="' + lessfile.inchecksum + ' ' + addition + '"><b>' + constrain_insert + filename + ' <button title="Recompile now" class="recompile"> </button> <button title="Remove from list" class="remove"> </button></b><span class="path">' + subline + '</span><span class="info">' + filedate_str + '<i>' + uhr_str + '</i></span></li>';
         $('body').removeClass('welcome');

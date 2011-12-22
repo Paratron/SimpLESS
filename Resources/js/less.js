@@ -2855,7 +2855,7 @@ function xhr(url, type, callback, errback) {
     //If there is no file ending, LESS assumes you are trying to include a LESS file.
     app.debug('LESS XHR: '+url);
     if(url.substr(-4) != '.css' && url.substr(-5) != '.less') url += '.less';
-    var file = app.compiling_file.infile.parent().resolve(url);
+    var file = fixfile(app.compiling_file.infile.parent()).grep(url);
     var src = file.open().read().toString();
     callback(src, file.modificationTimestamp());
 }
