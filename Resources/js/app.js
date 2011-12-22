@@ -538,24 +538,31 @@ var app = {
         //Remove the .less file extension to re-use the filename for the CSS file.
         filename = filename.replace('.' + less_file_object.extension(), '');
 
+        /*
+         * This is the greatest bullshit of all times.
+         * parent() or resolve('../') actually goes two folders upwards -_-
+         */
+        var parent = less_file_object.parent();
+        var parentname = parent.nativePath().split(s).pop();
+
         //Attempt 1:
         // ../css/[NAME].css;
-        test = less_file_object.parent().resolve('..' + s + 'css' + s);
+        test = parent.resolve(parentname+s+'..'+s+'css'+s);
         if (test.exists() && test.isDirectory()) {
-            return '..' + s + 'css' + s + filename + '.css';
+            return parentname+s+'..' + s + 'css' + s + filename + '.css';
         }
 
 
         //Attempt 2:
         // ./css/[NAME].css;
-        test = less_file_object.parent().resolve('..' + s + 'css' + s);
+        test = parent.resolve(parentname+s+'css' + s);
         if (test.exists() && test.isDirectory()) {
-            return '..' + s + 'css' + s + filename + '.css';
+            return parentname+s+'..' + s + 'css' + s + filename + '.css';
         }
 
         //Attempt 3:
         // ./[NAME].css;
-        return './' + filename + '.css';
+        return parentname+s+ filename + '.css';
     },
 
     /**

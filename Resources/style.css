@@ -313,6 +313,8 @@ li b{
 
 button{
     background:  transparent;
+    position: relative;
+    top: -2px;
     border:  none;
     display: inline-block;
     width: 18px;
@@ -327,10 +329,10 @@ button{
 
 .recompile{
     margin-left: 5px;
-    background-position: -210px -99px;
+    background-position: -207px -97px;
 }
 .recompile:hover{
-    background-position: -189px -99px;
+    background-position: -186px -97px;
 }
 
 .remove{

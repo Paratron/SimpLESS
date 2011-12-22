@@ -6,15 +6,15 @@
 #guid:cd74c124-3f01-4726-9430-4cbc61e0340f
 #desc:A simple LESS compiler for Windows, osX and Linux
 #type:desktop
-runtime:1.2.0.RC3
-tiapp:1.2.0.RC3
-tifilesystem:1.2.0.RC3
-tiplatform:1.2.0.RC3
-tiui:1.2.0.RC3
-ticodec:1.2.0.RC3
-tidatabase:1.2.0.RC3
-timedia:1.2.0.RC3
-timonkey:1.2.0.RC3
-tinetwork:1.2.0.RC3
-tiprocess:1.2.0.RC3
-tiworker:1.2.0.RC3
+runtime:1.1.0
+tiapp:1.1.0
+tifilesystem:1.1.0
+tiplatform:1.1.0
+tiui:1.1.0
+ticodec:1.1.0
+tidatabase:1.1.0
+timedia:1.1.0
+timonkey:1.1.0
+tinetwork:1.1.0
+tiprocess:1.1.0
+tiworker:1.1.0
