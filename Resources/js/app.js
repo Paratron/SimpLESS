@@ -412,6 +412,12 @@ var app = {
 
     find_constraints: function(file_object){
         app.debug('Finding constraints for: '+file_object);
+        
+        if(!file_object.size){
+            app.debug('File is empty - stopping search for constraints');
+            return [];
+        }
+
         var source = file_object.open().read().toString(),
             parent = fixfile(file_object.parent()),
             re = /@import.+?"(.+?)"/g,
@@ -428,6 +434,12 @@ var app = {
                     obj: path_obj
                 });
                 constraints = constraints.concat(app.find_constraints(path_obj));
+            } else {
+                constraints.push({
+                   last_stamp: 0,
+                    title: result[1],
+                    obj: path_obj
+                });
             }
         }
 
@@ -444,6 +456,7 @@ var app = {
      */
     index_add: function(file_object) {
         this.debug('Adding file to index...');
+        var is_empty = false;
         var parent = fixfile(file_object.parent());
         //With the first file being index, the "restore" button should vanish.
 
@@ -453,10 +466,14 @@ var app = {
 
         //So if there are already any lessfiles indexed, look if we can find our checksum.
         //If we found it, we can leave here since we already have indexed this file.
-        if (app.lessfiles.length)
+        if (app.lessfiles.length){
             for (var i in app.lessfiles) {
                 if (app.lessfiles[i].inchecksum == checksum) return;
             }
+        } else {
+            is_empty = true;
+        }
+
 
         //Great, its not indexed.
         //So then lets try to find out where the matching CSS file to our LESS file is located - if there is any.
@@ -476,7 +493,14 @@ var app = {
         //We have to load the source and parse search for any imports!
         var constraints = app.find_constraints(file_object);
 
-        console.log(constraints);
+        var compiler_error = '';
+
+        for(var i in constraints){
+            if(!constraints[i].obj.exists()){
+                compiler_error = 'Import "'+constraints[i].title+'" not found';
+                break;
+            }
+        }
 
         //Now we create the LESS object to store in our index.
         var elem = {
@@ -486,8 +510,8 @@ var app = {
             outpath: cssfile_path_relative, //Relative path to the CSS file. Only needed for displaying right now.
             outfile: cssfile, //Output file (CSS)
             outstamp: the_outstamp, //Time, the output file has been changed the last time.
-            compile_status: 0, //0 = neutral, 1 = success, 2 = fault
-            compiler_error: '',
+            compile_status: ((compiler_error) ? 2 : 0), //0 = neutral, 1 = success, 2 = fault
+            compiler_error: compiler_error,
             compiler_wait: false, //Should the compiler ignore this file? Will be determined below.
             constraints: constraints //Any compiling constraints to other LESS files.
         };
@@ -585,6 +609,18 @@ var app = {
         var input = indexed_less_file_object.infile;
         var output = indexed_less_file_object.outfile;
         var lesscode = '';
+
+        app.debug('Checking constraint files...');
+        var constraints = indexed_less_file_object.constraints;
+        for(var i in constraints){
+            if(!constraints[i].obj.exists()){
+                indexed_less_file_object.compiler_error = 'Import "'+constraints[i].title+'" not found';
+                indexed_less_file_object.compile_status = 2;
+                app.tray_status(2, err.message); //Red tray icon
+                return false;
+            }
+        }
+
         app.debug('Loading source');
         if (input.size()) {
             lesscode = input.open().read().toString();
@@ -745,7 +781,6 @@ var app = {
                     app.list_update();
                 }, 30 * 1000);
             }
-            if (lessfile.compile_status == 2) addition = 'error';
             filedate_str = 'a few seconds ago...';
             uhr_str = '';
         }
@@ -776,7 +811,10 @@ var app = {
             uhr_str = '';
         }
 
-        if (lessfile.compile_status == 2) uhr_str = lessfile.compiler_error;
+        if (lessfile.compile_status == 2){
+            uhr_str = lessfile.compiler_error;
+            addition = 'error';
+        }
         var title = '';
         var constrain_insert = '';
         if (lessfile.constraints.length) {
