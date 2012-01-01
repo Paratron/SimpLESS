@@ -3,7 +3,7 @@
  * Fork us on GitHub!
  * Feel free to make any improvements to this little app and send us a notice! =)
  * @author Christian Engel <christian.engel@wearekiss.com>
- * @version 1.1
+ * @version 1.3
  */
 var app = {
     /**
@@ -237,7 +237,7 @@ var app = {
             for (var i in restore_paths) {
                 app.drop_action(restore_paths[i]);
             }
-            setTimeout(function(){
+            setTimeout(function() {
                 app.list_update();
             }, 500);
         }
@@ -413,10 +413,10 @@ var app = {
         }
     },
 
-    find_constraints: function(file_object){
-        app.debug('Finding constraints for: '+file_object);
-        
-        if(!file_object.size()){
+    find_constraints: function(file_object) {
+        app.debug('Finding constraints for: ' + file_object);
+
+        if (!file_object.size()) {
             app.debug('File is empty - stopping search for constraints');
             return [];
         }
@@ -439,7 +439,7 @@ var app = {
                 constraints = constraints.concat(app.find_constraints(path_obj));
             } else {
                 constraints.push({
-                   last_stamp: 0,
+                    last_stamp: 0,
                     title: result[1],
                     obj: path_obj
                 });
@@ -469,7 +469,7 @@ var app = {
 
         //So if there are already any lessfiles indexed, look if we can find our checksum.
         //If we found it, we can leave here since we already have indexed this file.
-        if (app.lessfiles.length){
+        if (app.lessfiles.length) {
             for (var i in app.lessfiles) {
                 if (app.lessfiles[i].inchecksum == checksum) return;
             }
@@ -498,9 +498,9 @@ var app = {
 
         var compiler_error = '';
 
-        for(var i in constraints){
-            if(!constraints[i].obj.exists()){
-                compiler_error = 'Import "'+constraints[i].title+'" not found';
+        for (var i in constraints) {
+            if (!constraints[i].obj.exists()) {
+                compiler_error = 'Import "' + constraints[i].title + '" not found';
                 break;
             }
         }
@@ -587,20 +587,20 @@ var app = {
         // ../css/[NAME].css;
         test = parent.grep('..' + s + 'css' + s);
         if (test.exists() && test.isDirectory()) {
-            return '..'+s+'css' + s + filename + '.css';
+            return '..' + s + 'css' + s + filename + '.css';
         }
 
 
         //Attempt 2:
         // ./css/[NAME].css;
-        test = parent.grep('.'+s+'css' + s);
+        test = parent.grep('.' + s + 'css' + s);
         if (test.exists() && test.isDirectory()) {
-            return '.'+s+'css' + s + filename + '.css';
+            return '.' + s + 'css' + s + filename + '.css';
         }
 
         //Attempt 3:
         // ./[NAME].css;
-        return '.'+s+filename + '.css';
+        return '.' + s + filename + '.css';
     },
 
     /**
@@ -615,9 +615,9 @@ var app = {
 
         app.debug('Checking constraint files...');
         var constraints = indexed_less_file_object.constraints;
-        for(var i in constraints){
-            if(!constraints[i].obj.exists()){
-                indexed_less_file_object.compiler_error = 'Import "'+constraints[i].title+'" not found';
+        for (var i in constraints) {
+            if (!constraints[i].obj.exists()) {
+                indexed_less_file_object.compiler_error = 'Import "' + constraints[i].title + '" not found';
                 indexed_less_file_object.compile_status = 2;
                 app.tray_status(2, err.message); //Red tray icon
                 return false;
@@ -634,6 +634,9 @@ var app = {
 
         var minify = true;
         if (lesscode.search(/simpless\:\!minify/) != -1) minify = false;
+
+        var prefixize = false;
+        if (lesscode.search(/simpless:autoprefix/) != -1) prefixize = true;
 
         var parse_result = false;
 
@@ -663,6 +666,26 @@ var app = {
                 if (minify) {
                     app.debug('Minifying CSS...');
                     csscode = CleanCSS.process(csscode);
+                }
+                if (prefixize) {
+                    app.debug('Prefixizing CSS via prefixr.com ...');
+                    var data = {
+                        css: csscode,
+                        simpless: Titanium.App.getVersion()
+                    };
+                    if(minify){
+                        data.compress_option = 'on';
+                    }
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        data: data,
+                        type: 'POST',
+                        url: 'http://prefixr.com/api/index.php',
+                        success: function(response){
+                            csscode = response;
+                        }
+                    });
                 }
                 var pointer = output.open();
                 pointer.open(pointer.MODE_WRITE);
@@ -814,7 +837,7 @@ var app = {
             uhr_str = '';
         }
 
-        if (lessfile.compile_status == 2){
+        if (lessfile.compile_status == 2) {
             uhr_str = lessfile.compiler_error;
             addition = 'error';
         }
