@@ -3010,9 +3010,10 @@ tree.URL = function (val, paths) {
         this.attrs = val;
     } else {
         // Add the base path if the URL is relative and we are in the browser
-        if (typeof(window) !== 'undefined' && !/^(?:https?:\/\/|file:\/\/|data:|\/)/.test(val.value) && paths.length > 0) {
-            val.value = paths[0] + (val.value.charAt(0) === '/' ? val.value.slice(1) : val.value);
-        }
+        // Note: Commented out for SimpLESS
+        //if (typeof(window) !== 'undefined' && !/^(?:https?:\/\/|file:\/\/|data:|\/)/.test(val.value) && paths.length > 0) {
+        //    val.value = paths[0] + (val.value.charAt(0) === '/' ? val.value.slice(1) : val.value);
+        //}
         this.value = val;
         this.paths = paths;
     }
