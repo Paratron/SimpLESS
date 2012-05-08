@@ -58,7 +58,7 @@ var app = {
         bind: function(object) {
             this.bind_object = object;
 
-            object.ondragenter = object.ondragover = function(e) {
+            object.ondragenter = /*object.ondragover =*/ function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 e.dataTransfer.effectAllowed = 'all';
@@ -149,17 +149,19 @@ var app = {
         //Notice: My drop event directly has a files property - no dataTransfer Object, since I just don't need it.
         document.addEventListener('drop', function(e) {
             var path;
-            if (Titanium.getPlatform() == 'linux' && e.dataTransfer.files.length > 1) {
+            if (Titanium.getPlatform() == 'linux' && e.files.length > 1) {
                 alert('Due to a bug in the appcelerator framework, only one file/folder can be collected at once. :(');
             }
             for (var i = 0; i < e.files.length; i++) {
                 path = e.files[i].path;
-                //On linux there is some drawback with file dropping: we get an URI encoded string...
-                if (Titanium.getPlatform() == 'linux') {
-                    path = decodeURI(path.replace('file://', ''));
-
+                if(path)
+                {
+                    //On linux there is some drawback with file dropping: we get an URI encoded string...
+                    if (Titanium.getPlatform() == 'linux') {
+                        path = decodeURI(path.substring('file://'.length));
+                    }
+                    app.drop_action(path);
                 }
-                app.drop_action(path);
             }
         });
 
@@ -895,4 +897,4 @@ var app = {
             }
         }
     }
-}
+};
