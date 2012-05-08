@@ -14,6 +14,16 @@ Me not ;)
 So I decided to create a little compiler for LESS that runs on every platform.
 It utilizes the appcelerator titanium platform ( http://appcelerator.com/ ) to achieve this task.
 
+
+Ubuntu installation
+-------------------
+
+- make sure you have the libjpeg62 package installed: ```sudo apt-get install libjpeg62```
+- open a terminal in the folder where you uncompressed the file from [wearekiss.com/simpless](http://api.appcelerator.net/p/v1/download?token=K4v9dtQ4) and go to the **modules/tiui/1.1** folder : ```cd /home/username/apps/SimpLESS-1.3/modules/tiui/1.1```.0/
+- create a symbolic link to the libnotify shared object: ```ln -s /usr/lib/x86_64-linux-gnu/libnotify.so.4 libnotify.so.1```
+- you can now use **SimpLESS** on Ubuntu without Wine!
+
+
 Changelog
 ---------
 
