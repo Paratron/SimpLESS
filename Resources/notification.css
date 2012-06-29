@@ -1,0 +1,80 @@
+body{
+    padding: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.notification {
+    background: #ebebeb;
+    width: 220px;
+    padding: 10px;
+    -webkit-box-shadow: 0px 1px 5px 0px #000000, inset 0px 1px 0px 0px rgba(242, 242, 242, 0.7);
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    -webkit-border-radius: 5px;
+}
+
+.notification-icon {
+    float: left;
+    width: 48px;
+    float: left;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.notification-content {
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: top;
+}
+
+.notification-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0;
+    margin-bottom: 5px;
+}
+
+.notification-body {
+    font-size: 12px;
+    color: #333;
+    padding: 0;
+}
+
+.notification-close{
+    position: absolute;
+    top: 10px;
+    right: 5px;
+    width: 9px;
+    height: 11px;
+    background: url(img/delete.png) top left no-repeat;
+    cursor: pointer;
+    border: none;
+    text-indent: -30000px;
+}
+.notification-close:hover{
+    background-position: bottom left;
+}
+
+
+/* Positions */
+.bottom-right{
+    bottom: 10px;
+    right: 10px;
+    top: auto;
+    left: auto;
+}
+
+.bottom-left{
+    bottom: 10px;
+    left: 10px;
+    right: auto;
+    top: auto;
+}
+
+.top-right{
+    top: 10px;
+    right: 10px;
+    bottom: auto;
+    left: auto;
+}

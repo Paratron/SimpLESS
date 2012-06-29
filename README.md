@@ -1,4 +1,4 @@
-SimpLESS Compiler 1.3
+SimpLESS Compiler 1.4
 =====================
 
 Description
@@ -16,6 +16,18 @@ It utilizes the appcelerator titanium platform ( http://appcelerator.com/ ) to a
 
 Changelog
 ---------
+
+v 1.4
+
+- tweaked UI
+- removed the compilation options from the lesscode and implemented it into the UI
+- the target CSS file to compile to can now be chosen from the UI
+- implemented usage of http://prefixr.com for automatic CSS3 vendor prefixing
+- embedded the most recent version of less - v 1.3.0
+- implemented a automatic updater for the less compiler
+- if a LESS file starts with a CSS block comment, SimpLESS will keep that comment after minification (i.e. for Wordpress)
+- metric tonne of bugfixes
+
 
 v 1.3
 
@@ -51,14 +63,5 @@ Download Builds
 ---------------
 
 Download builds for every platform under http://wearekiss.com/simpless/
-
-
-Planned Features
-----------------
-
-Currently I'm thinking about implementing the following features in near future:
-
-- Adding vendor prefixes automatically like prefixer ( http://cssprefixer.appspot.com/ ) does.
-- adding SASS support
 
 

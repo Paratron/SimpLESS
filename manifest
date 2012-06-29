@@ -1,10 +1,10 @@
-#appname:SimpLESS
-#appid:com.wearekiss.simpless.open
-#publisher:KISS
-#image:icon.png
+#appname:SimpLESS14
+#appid:com.wearekiss.simpless
+#publisher:Christian
+#image:default_app_logo.png
 #url:http://wearekiss.com
-#guid:cd74c124-3f01-4726-9430-4cbc61e0340f
-#desc:A simple LESS compiler for Windows, osX and Linux
+#guid:9bed4fb3-0e05-4024-a9b3-2c74c4d1d053
+#desc:No description provided
 #type:desktop
 runtime:1.1.0
 tiapp:1.1.0

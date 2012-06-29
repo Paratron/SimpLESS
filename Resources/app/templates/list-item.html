@@ -1,0 +1,5 @@
+<b class="title"><%= filename %><% if(constraints.length){ %> <span class="constraints">(+<%=constraints.length%>)</span><% } %><button title="Recompile now" class="recompile"></button><button title="Remove from list" class="remove"></button></b><div class="source_file"><%= source_file_path %><b><%= source_file_name %></b></div><div class="target_file"><%= target_file_path %><b><%= target_file_name %></b><button title="change target file" class="browse"></button></div><span class="info"><%= info_a %></span><div class="togglers">
+    <button title="toggle usage of prefixr.com" class="prefixr<% if(settings.prefix){ print(' active'); } %>"></button>
+    <button title="toggle css minification" class="minify<% if(settings.minify){ print(' active'); } %>"></button>
+    <button title="mention SimpLESS in a CSS comment" class="love<% if(settings.love){ print(' active'); } %>"></button>
+</div>

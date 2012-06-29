@@ -1,31 +1,29 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <ti:app xmlns:ti='http://ti.appcelerator.org'>
-    <!-- These values are edited/maintained by Titanium Developer -->
-<id>com.wearekiss.simpless.open</id>
+<!-- These values are edited/maintained by TiDev Community -->
+<id>com.wearekiss.simpless</id>
 <name>SimpLESS</name>
-<version>1.3</version>
+<version>1.4</version>
 <publisher>KISS</publisher>
 <url>http://wearekiss.com</url>
-<icon>icon.png</icon>
-<copyright>2011 KISS</copyright>
-<NSUIElement>1</NSUIElement>
-    <!-- Window Definition - these values can be edited -->
-    <window>
-        <id>initial</id>
-        <title>SimpLess</title>
-        <url>app://index.html</url>
-        <width>330</width>
-        <max-width>3000</max-width>
-        <min-width>330</min-width>
-        <height>280</height>
-        <max-height>3000</max-height>
-        <min-height>280</min-height>
-        <fullscreen>false</fullscreen>
-        <resizable>true</resizable>
-        <chrome>true</chrome>
-        <maximizable>true</maximizable>
-        <minimizable>true</minimizable>
-        <closeable>true</closeable>
-        <NSUIElement>1</NSUIElement>
-    </window>
+<icon>img/icon.png</icon>
+<copyright>2012 by Kiss</copyright>
+<!-- Window Definition - these values can be edited -->
+<window>
+<id>initial</id>
+<title>SimpLESS</title>
+<url>app://index.html</url>
+<width>700</width>
+<max-width>3000</max-width>
+<min-width>600</min-width>
+<height>500</height>
+<max-height>3000</max-height>
+<min-height>400</min-height>
+<fullscreen>false</fullscreen>
+<resizable>true</resizable>
+<chrome scrollbars="true">true</chrome>
+<maximizable>true</maximizable>
+<minimizable>true</minimizable>
+<closeable>true</closeable>
+</window>
 </ti:app>
