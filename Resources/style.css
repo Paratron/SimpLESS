@@ -123,7 +123,8 @@ button {
 #add-more {
     border: none !important;
     height: 40px;
-    background: url(img/more.png) center no-repeat !important;
+    /*background: url(img/more.png) center no-repeat !important;*/
+    background: url(img/spritemap.png) bottom center no-repeat !important;
 }
 
 #overlay {
@@ -172,11 +173,13 @@ li .remove {
     right: 10px;
     width: 9px;
     height: 11px;
-    background: url(img/delete.png) top left no-repeat;
+    /*background: url(img/delete.png) top left no-repeat;*/
+    background: url(img/spritemap.png) -187px -203px no-repeat;
 }
 
 li .remove:hover {
-    background-position: bottom left;
+    /*background-position: bottom left;*/
+    background-position: -187px -214px;
 }
 
 li .source_file, li .target_file {
@@ -186,25 +189,29 @@ li .source_file, li .target_file {
 }
 
 li .source_file {
-    background: url(img/in.png) top left no-repeat;
+    /*background: url(img/in.png) top left no-repeat;*/
+    background: url(img/spritemap.png) -321px -266px no-repeat;
     margin-bottom: 5px;
 }
 
 li .target_file {
-    background: url(img/out.png) top left no-repeat;
+    /*background: url(img/out.png) top left no-repeat;*/
+    background: url(img/spritemap.png) -321px -283px no-repeat;
 }
 
 li .browse {
     display: inline-block;
     width: 15px;
     height: 10px;
-    background: url(img/browse.png) top left no-repeat;
+    /*background: url(img/browse.png) top left no-repeat;*/
+    background: url(img/spritemap.png) -184px -242px;
     margin-left: 5px;
     vertical-align: bottom;
 }
 
 li .browse:hover {
-    background-position: bottom left;
+    /*background-position: bottom left;*/
+    background-position: -184px -252px;
 }
 
 li .info {
@@ -221,7 +228,8 @@ li.success .info {
 }
 
 li.success .target_file {
-    background-image: url(img/compiled.png);
+    /*background-image: url(img/compiled.png);*/
+    background: url(img/spritemap.png) -318px -317px no-repeat;
 }
 
 li.error .info {
@@ -232,7 +240,8 @@ li.error .info b{
 }
 
 li.error .target_file {
-    background-image: url(img/error.png);
+    /*background-image: url(img/error.png);*/
+    background: url(img/spritemap.png) -322px -300px no-repeat;
     color: #fc2a24;
 }
 
@@ -250,7 +259,7 @@ li .togglers {
 }
 
 li .togglers button {
-    background: url('img/options.png');
+    background: url('img/spritemap.png');
     height: 11px;
     margin-right: 2px;
 }
@@ -261,29 +270,29 @@ li .togglers button:last-child {
 
 li .togglers .prefixr {
     width: 29px;
-    background-position: top left;
+    background-position: -151px -289px;
 }
 
 li .togglers .prefixr.active {
-    background-position: bottom left;
+    background-position: -151px -300px;
 }
 
 li .togglers .minify {
     width: 28px;
-    background-position: -31px 0;
+    background-position: -182px -289px;
 }
 
 li .togglers .minify.active {
-    background-position: -31px -11px;
+    background-position: -182px -300px;
 }
 
 li .togglers .love {
     width: 21px;
-    background-position: -61px 0;
+    background-position: -212px -289px;
 }
 
 li .togglers .love.active {
-    background-position: -61px -11px;
+    background-position: -212px -300px;
 }
 
 li .constraints{
