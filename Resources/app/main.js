@@ -29,7 +29,7 @@ define(['modules/ui'], function (ui) {
     current_less = result[1];
 
     $.get('http://lesscss.org', function (response) {
-        var download_regex = /http:\/\/lesscss.googlecode.com\/files\/less-[\d\.]+\.min\.js/;
+        var download_regex = /http:\/\/cloud.github.com\/downloads\/cloudhead\/less.js\/less-[\d\.]+\.min\.js/;
         var version_regex = /-([\d\.]+)\.min/;
 
         var result = download_regex.exec(response);
