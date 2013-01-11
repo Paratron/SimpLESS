@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     cursor: default;
+    outline: none; /* remove the dotted border on click */
 }
 
 a img {
