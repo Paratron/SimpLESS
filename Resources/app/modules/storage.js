@@ -45,7 +45,7 @@ define(['modules/compiler'], function (compiler) {
                 });
                 if (typeof preserved_settings.output_file != 'undefined') {
                     this.set({
-                        output_file:Titanium.Filesystem.getFile(preserved_settings.output_file)
+                        output_file:Ti.Filesystem.getFile(preserved_settings.output_file)
                     });
                 }
             }
@@ -56,7 +56,7 @@ define(['modules/compiler'], function (compiler) {
             }, this);
 
             if (this.get('output_file') == null) {
-                var newfile = Titanium.Filesystem.getFile(this.get('input_file').nativePath().replace('.less', '.css'));
+                var newfile = Ti.Filesystem.getFile(this.get('input_file').nativePath().replace('.less', '.css'));
                 this.set({
                     output_file:newfile
                 })
@@ -69,12 +69,12 @@ define(['modules/compiler'], function (compiler) {
      * Originally this should work by calling [ti_file].resolve() but it doesnt. :/
      * @param ti_file
      * @param path
-     * @return Titanium.Filesystem.File
+     * @return Ti.Filesystem.File
      */
     function grep(ti_file, path) {
         if (!path) return this;
         var mypath = ti_file.toString(),
-                s = Titanium.Filesystem.getSeparator(),
+                s = Ti.Filesystem.getSeparator(),
                 my_chain = mypath.split(s),
                 grep_chain = path.split(s),
                 i,
@@ -95,7 +95,7 @@ define(['modules/compiler'], function (compiler) {
             my_chain.push(g);
         }
 
-        return Titanium.Filesystem.getFile(my_chain.join(s));
+        return Ti.Filesystem.getFile(my_chain.join(s));
     }
 
     /**
@@ -114,7 +114,7 @@ define(['modules/compiler'], function (compiler) {
         if(!list) return;
         observed_files.reset();
         _.each(list, function(item){
-            var file = Titanium.Filesystem.getFile(item);
+            var file = Ti.Filesystem.getFile(item);
             if(file.exists){
                 read_file(file);
             }
@@ -209,7 +209,7 @@ define(['modules/compiler'], function (compiler) {
          * @param element
          */
         add:function (element) {
-            var filetest = Titanium.Filesystem.getFile(element.path);
+            var filetest = Ti.Filesystem.getFile(element.path);
             if (filetest.isDirectory()) {
                 return read_folder(filetest);
             } else {

@@ -93,7 +93,7 @@ var app = {
             restore.push(app.lessfiles[key].infile.toString());
         }
         app.restore_paths = restore;
-        localStorage.setItem('restore', Titanium.JSON.stringify(restore));
+        localStorage.setItem('restore', Ti.JSON.stringify(restore));
     },
 
     /**
@@ -106,16 +106,16 @@ var app = {
         app.check_update();
 
         //First start on a mac? Show some information for the poor user...
-        if (Titanium.getPlatform() == 'osx') {
+        if (Ti.getPlatform() == 'osx') {
             if (localStorage.getItem('firstRun') != 1) {
                 if (confirm('This is your first start of SimpLESS, we will display this message only once:\n\nIf you want to hide this app from the dock, then please read our tutorial on our blog: \n\nhttp://wearekiss.com/blog/simpless-1.2\n\nClick OK to open it in your browser.')) {
-                    Titanium.Platform.openURL('http://wearekiss.com/blog/simpless-1.2');
+                    Ti.Platform.openURL('http://wearekiss.com/blog/simpless-1.2');
                 }
             }
         }
         localStorage.setItem('firstRun', 1);
 
-        $('head title').text('SimpLESS ' + Titanium.App.getVersion());
+        $('head title').text('SimpLESS ' + Ti.App.getVersion());
 
         //The words "your lessCSS compiler" should disappear after 5 seconds.
         setTimeout(function() {
@@ -149,13 +149,13 @@ var app = {
         //Notice: My drop event directly has a files property - no dataTransfer Object, since I just don't need it.
         document.addEventListener('drop', function(e) {
             var path;
-            if (Titanium.getPlatform() == 'linux' && e.dataTransfer.files.length > 1) {
+            if (Ti.getPlatform() == 'linux' && e.dataTransfer.files.length > 1) {
                 alert('Due to a bug in the appcelerator framework, only one file/folder can be collected at once. :(');
             }
             for (var i = 0; i < e.files.length; i++) {
                 path = e.files[i].path;
                 //On linux there is some drawback with file dropping: we get an URI encoded string...
-                if (Titanium.getPlatform() == 'linux') {
+                if (Ti.getPlatform() == 'linux') {
                     path = decodeURI(path.replace('file://', ''));
 
                 }
@@ -225,15 +225,15 @@ var app = {
         app.tray_init();
 
         //When the main window gets closed, clean up.
-        var win = Titanium.UI.getMainWindow();
-        win.addEventListener(Titanium.CLOSED, function(e) {
-            Titanium.UI.clearTray();
+        var win = Ti.UI.getMainWindow();
+        win.addEventListener(Ti.CLOSED, function(e) {
+            Ti.UI.clearTray();
         });
 
         //Check if restore data is available.
         var restoreData = localStorage.getItem('restore');
         if (typeof restoreData == 'string' && restoreData != '[]' && restoreData != '') {
-            var restore_paths = Titanium.JSON.parse(restoreData);
+            var restore_paths = Ti.JSON.parse(restoreData);
             for (var i in restore_paths) {
                 app.drop_action(restore_paths[i]);
             }
@@ -250,9 +250,9 @@ var app = {
      */
     check_update: function() {
         $.get('http://wearekiss.com/simpless-version.txt', function(response) {
-            if (response != Titanium.App.getVersion()) {
+            if (response != Ti.App.getVersion()) {
                 if (confirm('There is an update available under http://wearekiss.com/simpless\n\nClick OK to open the website to download it.')) {
-                    Titanium.Platform.openURL('http://wearekiss.com/simpless');
+                    Ti.Platform.openURL('http://wearekiss.com/simpless');
                 }
             }
         });
@@ -264,15 +264,15 @@ var app = {
      */
     tray_init: function() {
         //We want to trigger when the app gets minimized to hide the main window
-        var win = Titanium.UI.getMainWindow();
-        win.addEventListener(Titanium.MINIMIZED, function(e) {
+        var win = Ti.UI.getMainWindow();
+        win.addEventListener(Ti.MINIMIZED, function(e) {
             e.preventDefault();
             win.unminimize();
             win.hide();
         });
         //When someone clicks on the tray, bring the main window back on screen.
-        app.tray_icon = Titanium.UI.addTray('img/icon-tray.png', function(e) {
-            var win = Titanium.UI.getMainWindow();
+        app.tray_icon = Ti.UI.addTray('img/icon-tray.png', function(e) {
+            var win = Ti.UI.getMainWindow();
             win.show();
             win.unminimize();
         });
@@ -313,7 +313,7 @@ var app = {
     debug: function(message) {
         if (!this.debug_mode) return;
         console.log(message);
-        Titanium.API.debug(message);
+        Ti.API.debug(message);
     },
 
     /**
@@ -383,7 +383,7 @@ var app = {
         if (filepath) {
             app.debug(filepath);
 
-            var file_obj = Titanium.Filesystem.getFile(filepath.toString());
+            var file_obj = Ti.Filesystem.getFile(filepath.toString());
             if (!file_obj.exists()) return;
 
             if (file_obj.isFile()) {
@@ -465,7 +465,7 @@ var app = {
 
         //First, create the checksum of the files filename.
         //We need this checksum to identify our files.
-        var checksum = Titanium.Codec.digestToHex(Titanium.Codec.MD5, file_object.toString());
+        var checksum = Ti.Codec.digestToHex(Ti.Codec.MD5, file_object.toString());
 
         //So if there are already any lessfiles indexed, look if we can find our checksum.
         //If we found it, we can leave here since we already have indexed this file.
@@ -562,14 +562,14 @@ var app = {
     /**
      * Returns a file object of an CSS file matching to the LESS file.
      * @param less_file_object
-     * @return Titanium.Filesystem.File
+     * @return Ti.Filesystem.File
      */
     find_css_match: function(less_file_object) {
         //Generic variable to test if a css file is there.
         var test = null,
             parent = fixfile(less_file_object.parent());
         //The current operating systems' path seperator
-        var s = Titanium.Filesystem.getSeparator();
+        var s = Ti.Filesystem.getSeparator();
 
         //Getting the filename by splitting up the path on every path seperator and popping the last element.
         var filename = less_file_object.nativePath().split(s).pop();
@@ -580,7 +580,7 @@ var app = {
          * This is the greatest bullshit of all times.
          * parent() or resolve('../') actually goes two folders upwards -_-
          */
-        var parent = Titanium.Filesystem.getFile(less_file_object.resolve('./') + '/');
+        var parent = Ti.Filesystem.getFile(less_file_object.resolve('./') + '/');
         fixfile(parent);
 
         //Attempt 1:
@@ -671,7 +671,7 @@ var app = {
                     app.debug('Prefixizing CSS via prefixr.com ...');
                     var data = {
                         css: csscode,
-                        simpless: Titanium.App.getVersion()
+                        simpless: Ti.App.getVersion()
                     };
                     if(minify){
                         data.compress_option = 'on';
@@ -694,8 +694,8 @@ var app = {
                     pointer.write(csscode);
                 }
                 catch(e) {
-                    Titanium.API.debug('Error writing css file');
-                    Titanium.API.debug(e.toString());
+                    Ti.API.debug('Error writing css file');
+                    Ti.API.debug(e.toString());
                 }
                 pointer.close();
                 parse_result = true;
@@ -775,7 +775,7 @@ var app = {
      */
     list_add: function(lessfile) {
         //Get the Filename of the LESS file to display it.
-        var filename = lessfile.infile.nativePath().split(Titanium.Filesystem.getSeparator()).pop();
+        var filename = lessfile.infile.nativePath().split(Ti.Filesystem.getSeparator()).pop();
 
         //We need the modification timestamp of the file.
         var value = 0;
@@ -827,7 +827,7 @@ var app = {
             addition = 'warning';
             filedate_str = '<a href="#" class="overwrite">Overwrite</a> <a href="#" class="cancel">Cancel</a>';
             uhr_str = '';
-            var s = Titanium.Filesystem.getSeparator();
+            var s = Ti.Filesystem.getSeparator();
             var parts = lessfile.outfile.toString().split(s);
             subline = parts.pop() + ' is more recent than the LESS file!';
         }

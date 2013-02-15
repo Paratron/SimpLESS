@@ -7,7 +7,7 @@ define(function(){
 
     var settings = {
         duration: 10000,
-        icon: 'file:///'+Titanium.App.getIcon().replace(/\\/g, '/')
+        icon: 'file:///'+Ti.App.getIcon().replace(/\\/g, '/')
     }
 
     var obj = {
@@ -15,10 +15,10 @@ define(function(){
             _.extend(settings, params);
         },
         show: function(params){
-            var n = Titanium.Notification.createNotification();
+            var n = Ti.Notification.createNotification();
 
             if(params.icon){
-                params.icon = 'file:///' + Titanium.Filesystem.getResourcesDirectory().resolve('Resources/'+params.icon).nativePath().replace(/\\/g, '/');
+                params.icon = 'file:///' + Ti.Filesystem.getResourcesDirectory().resolve('Resources/'+params.icon).nativePath().replace(/\\/g, '/');
             }
 
             var params = _.extend(settings, params);

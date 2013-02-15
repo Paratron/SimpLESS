@@ -18,11 +18,11 @@ require.config({
 
 define(['modules/ui'], function (ui) {
     if (settings.debug) {
-        Titanium.UI.getCurrentWindow().showInspector();
+        Ti.UI.getCurrentWindow().showInspector();
     }
 
     //Check which LESS version is currently in our 3p folder.;
-    var lessfile = Titanium.Filesystem.getFile(Titanium.Filesystem.getResourcesDirectory().nativePath() + Titanium.Filesystem.getSeparator() + ['app', '3p', 'less.js'].join(Titanium.Filesystem.getSeparator()));
+    var lessfile = Ti.Filesystem.getFile(Ti.Filesystem.getResourcesDirectory().nativePath() + Ti.Filesystem.getSeparator() + ['app', '3p', 'less.js'].join(Ti.Filesystem.getSeparator()));
     var current_less = lessfile.open().read().toString();
     var version_regex = /LESS - Leaner CSS v([\d\.]+)/;
     var result = version_regex.exec(current_less);
@@ -56,12 +56,12 @@ define(['modules/ui'], function (ui) {
         }
     });
 
-    Titanium.UI.getCurrentWindow().setTitle('SimpLESS ' + settings.version + ' - less v' + current_less);
+    Ti.UI.getCurrentWindow().setTitle('SimpLESS ' + settings.version + ' - less v' + current_less);
 
     $.get('http://wearekiss.com/simpless-version.txt', function (response) {
         if (response != settings.version) {
             if (confirm('There is an update available under http://wearekiss.com/simpless\n\nClick OK to open the website to download it.')) {
-                Titanium.Platform.openURL('http://wearekiss.com/simpless');
+                Ti.Platform.openURL('http://wearekiss.com/simpless');
             }
         }
     });

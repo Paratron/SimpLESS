@@ -6,7 +6,7 @@ function fixfile(file) {
     file.grep = function(path) {
         if (!path) return this;
         var mypath = this.toString(),
-            s = Titanium.Filesystem.getSeparator(),
+            s = Ti.Filesystem.getSeparator(),
             my_chain = mypath.split(s),
             grep_chain = path.split(s),
             i,
@@ -27,7 +27,7 @@ function fixfile(file) {
             my_chain.push(g);
         }
 
-        return Titanium.Filesystem.getFile(my_chain.join(s));
+        return Ti.Filesystem.getFile(my_chain.join(s));
     };
     return file;
 }
