@@ -183,8 +183,9 @@ define(['modules/compiler'], function (compiler) {
                 files = [];
         while (result = reg_exp.exec(source)) {
             filepath = result[1].replace('url(', '');
-            tempfile = ti_file_obj.resolve(filepath);
-            if(!tempfile.exists()) tempfile = ti_file_obj.resolve(filepath + '.less');
+						var ti_folder_obj = ti_file_obj.isDirectory() ? ti_file_obj : ti_file_obj.parent();
+            tempfile = ti_folder_obj.resolve(filepath);
+            if(!tempfile.exists()) tempfile = ti_folder_obj.resolve(filepath + '.less');
             if (tempfile.exists()) {
                 if(tempfile.extension().toString().toLowerCase() == 'less'){
                     files.push(tempfile);
