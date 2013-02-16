@@ -170,9 +170,11 @@ define(['modules/compiler'], function (compiler) {
     /**
      * Finds all @import statements and returns them.
      * @param ti_file_obj
+     * @param additive_arr
      */
-    function find_constraints(ti_file_obj) {
-        if (ti_file_obj.exists() == false || ti_file_obj.size() == 0) return [];
+    function find_constraints(ti_file_obj, additive_arr) {
+        if(!additive_arr) additive_arr = [];
+        if (ti_file_obj.exists() == false || ti_file_obj.size() == 0) return additive_arr;
         var source = ti_file_obj.open().read().toString(), //Content of the .less file
                 reg_exp = /@import[ \(\"\']*([^\"\'\);\n]+)[;\)\"\']*/g;    //The RegEx magic that detects our import statements =]
 
@@ -183,7 +185,7 @@ define(['modules/compiler'], function (compiler) {
                 files = [];
         while (result = reg_exp.exec(source)) {
             filepath = result[1].replace('url(', '');
-						var ti_folder_obj = ti_file_obj.isDirectory() ? ti_file_obj : ti_file_obj.parent();
+            var ti_folder_obj = ti_file_obj.isDirectory() ? ti_file_obj : ti_file_obj.parent();
             tempfile = ti_folder_obj.resolve(filepath);
             if(!tempfile.exists()) tempfile = ti_folder_obj.resolve(filepath + '.less');
             if (tempfile.exists()) {
@@ -195,9 +197,28 @@ define(['modules/compiler'], function (compiler) {
                 console.log(tempfile.nativePath() + ' does not exist.');
             }
         }
+        //now lets clean the files list of duplicates aleardy in additive_arr
+        var clean_files = [];
+        for(var i=0; i < files.length; i++){
+          var isClean = true;
+          for(var p=0; p < additive_arr.length; p++){
+            if(additive_arr[p].toURL() === files[i].toURL()) isClean = false;
+          }
+          if(isClean) clean_files.push(files[i]);
+        }
 
-        return files;
+        // clean_files are now all unique ones not in additive_arr
+        // add all of them to additive_arr
+        additive_arr = additive_arr.concat(clean_files);
+
+        //now for each clean_files, find their imports
+        for(var x = 0; x < clean_files.length; x++){
+          additive_arr = find_constraints(clean_files[x],additive_arr);
+        }
+
+        return additive_arr;
     }
+
 
     var obj = {
         /**
