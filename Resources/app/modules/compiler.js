@@ -35,7 +35,6 @@ define(['less', '3p/cleancss'], function (less, cleancss) {
         current_model:null,
         compile:function (model) {
             var model_dta = model.toJSON();
-            var parser = new less.Parser();
 
             model.set({
                 last_compilation:(new Date()).getTime() * 1000,
@@ -45,6 +44,25 @@ define(['less', '3p/cleancss'], function (less, cleancss) {
             obj.current_model = model;
 
             var lesscode = model_dta.input_file.open().read().toString();
+            
+            
+            var parserConfig = {
+              // Specify search paths for @import directives
+              'paths' : [
+                model_dta.input_file.parent().toURL() + '/' //folder toURL requires trailing slash
+              ],
+                filename: model_dta.input_file.toURL()  // Specify a filename, for better error messages
+            };
+
+            // alittle ugly because lesscss 3.31 doesn't passthrough debug to imports.
+            //thus the need for the static less.dumpLineNumbers
+            if(model_dta.settings.debugLines){
+              less.dumpLineNumbers = true; 
+              parserConfig.dumpLineNumbers = 'all';
+            }else{
+              less.dumpLineNumbers = false;
+            }
+            var parser = new less.Parser(parserConfig);
 
             try {
                 parser.parse(lesscode, function (err, tree) {
@@ -57,7 +75,7 @@ define(['less', '3p/cleancss'], function (less, cleancss) {
                         return;
                     }
 
-                    var csscode = tree.toCSS();
+                    var csscode = tree.toCSS(parserConfig);
 
                     var comment_regex = /^\/\*([^\*\/]+?)\*\//gm;
                     var result = comment_regex.exec(csscode);

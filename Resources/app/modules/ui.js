@@ -58,6 +58,7 @@ define([
             "click .remove":"remove",
             "click .prefixr":"toggle_prefixr",
             "click .minify":"toggle_minify",
+            "click .debugLines":"toggle_debugLines",
             "click .love":"toggle_love",
             "click .browse":"browse_css"
         },
@@ -177,6 +178,15 @@ define([
         toggle_prefixr:function () {
             var settings = this.model.get('settings');
             settings.prefix = !settings.prefix;
+            this.model.set({
+                settings:settings
+            });
+            this.model.trigger('change:settings', settings);
+            this.model.trigger('change:all');
+        },
+        toggle_debugLines:function(){
+            var settings = this.model.get('settings');
+            settings.debugLines = !settings.debugLines;
             this.model.set({
                 settings:settings
             });
