@@ -20,7 +20,6 @@ define(['modules/ui'], function (ui) {
     if (settings.debug) {
         Ti.UI.getCurrentWindow().showInspector();
     }
-
     //Check which LESS version is currently in our 3p folder.;
     var lessfile = Ti.Filesystem.getFile(Ti.Filesystem.getResourcesDirectory().nativePath() + Ti.Filesystem.getSeparator() + ['app', '3p', 'less.js'].join(Ti.Filesystem.getSeparator()));
     var current_less = lessfile.open().read().toString();
@@ -29,7 +28,8 @@ define(['modules/ui'], function (ui) {
     current_less = result[1];
 
     $.get('http://lesscss.org', function (response) {
-        var download_regex = /http:\/\/lesscss.googlecode.com\/files\/less-[\d\.]+\.min\.js/;
+        //	https://raw.github.com/cloudhead/less.js/master/dist/less-1.3.3.min.js
+        var download_regex = /https:\/\/raw.github.com\/cloudhead\/less.js\/master\/dist\/less-[\d\.]+\.min\.js/;
         var version_regex = /-([\d\.]+)\.min/;
 
         var result = download_regex.exec(response);
