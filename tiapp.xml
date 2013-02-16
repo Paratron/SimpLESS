@@ -2,11 +2,11 @@
 <ti:app xmlns:ti='http://ti.appcelerator.org'>
 <!-- These values are edited/maintained by TiDev Community -->
 <id>com.wearekiss.simpless</id>
-<name>SimpLESS14</name>
+<name>SimpLESS</name>
 <version>1.4</version>
 <publisher>KISS</publisher>
 <url>http://wearekiss.com</url>
-<icon>icon.png</icon>
+<icon>img/icon.png</icon>
 <copyright>2012 by Kiss</copyright>
 <!-- Window Definition - these values can be edited -->
 <window>
