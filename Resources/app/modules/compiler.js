@@ -31,6 +31,15 @@ define(['less', '3p/cleancss'], function (less, cleancss) {
         model.collection.trigger('compilation:success');
     }
 
+    function postCreateCleanup(css){
+
+        //this is due to mechanism in less.js which is assumeing a browser.
+        //TODO cleanup
+        css = css.split('file\\:\\/\\/file\\:\\/\\/').join('file\\:\\/\\/')
+
+        return css;
+    }
+
     var obj = {
         current_model:null,
         compile:function (model) {
@@ -76,6 +85,8 @@ define(['less', '3p/cleancss'], function (less, cleancss) {
                     }
 
                     var csscode = tree.toCSS(parserConfig);
+
+                    csscode = postCreateCleanup(csscode);
 
                     var comment_regex = /^\/\*([^\*\/]+?)\*\//gm;
                     var result = comment_regex.exec(csscode);
