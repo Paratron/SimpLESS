@@ -295,6 +295,15 @@ li .togglers .love.active {
     background-position: -212px -300px;
 }
 
+li .togglers .debugLines{
+    width: 41px;
+    background-position: -233px -289px;
+}
+
+li .togglers .debugLines.active{
+    background-position: -233px -300px;
+}
+
 li .constraints{
     color: #bbbbbb;
 }

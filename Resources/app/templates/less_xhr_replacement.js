@@ -22,7 +22,7 @@ function xhr(url, type, callback, errback) {
             //FILE load.
             window.require(['modules/compiler'], function (compiler) {
                 var current_basefile = compiler.current_model.get('input_file'),
-                        sep = Titanium.Filesystem.getSeparator();
+                        sep = Ti.Filesystem.getSeparator();
 
                 var current_file = current_basefile.resolve(url);
 

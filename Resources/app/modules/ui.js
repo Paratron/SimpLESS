@@ -58,6 +58,7 @@ define([
             "click .remove":"remove",
             "click .prefixr":"toggle_prefixr",
             "click .minify":"toggle_minify",
+            "click .debugLines":"toggle_debugLines",
             "click .love":"toggle_love",
             "click .browse":"browse_css"
         },
@@ -79,7 +80,7 @@ define([
 
             this.model.bind('compilation:error', function (err) {
                 if (err.filename == null) {
-                    err.filename = _this.model.get('input_file').nativePath().toString().split(Titanium.Filesystem.getSeparator()).pop();
+                    err.filename = _this.model.get('input_file').nativePath().toString().split(Ti.Filesystem.getSeparator()).pop();
                 }
 
                 _this.model.collection.trigger('compillation:error', err);
@@ -105,19 +106,19 @@ define([
         render:function () {
             var model_dta = this.model.toJSON(),
                     dta,
-                    source_path = model_dta.input_file.nativePath().split(Titanium.Filesystem.getSeparator());
+                    source_path = model_dta.input_file.nativePath().split(Ti.Filesystem.getSeparator());
 
             $(this.el).removeClass('success error');
 
-            var source = String(model_dta.input_file.nativePath()).split(Titanium.Filesystem.getSeparator());
-            var target = String(model_dta.output_file.nativePath()).split(Titanium.Filesystem.getSeparator());
+            var source = String(model_dta.input_file.nativePath()).split(Ti.Filesystem.getSeparator());
+            var target = String(model_dta.output_file.nativePath()).split(Ti.Filesystem.getSeparator());
 
             dta = {
                 filename:source_path.pop(),
                 source_file_name:source.pop(),
                 target_file_name:target.pop(),
-                source_file_path:source.join(Titanium.Filesystem.getSeparator()) + Titanium.Filesystem.getSeparator(),
-                target_file_path:target.join(Titanium.Filesystem.getSeparator()) + Titanium.Filesystem.getSeparator(),
+                source_file_path:source.join(Ti.Filesystem.getSeparator()) + Ti.Filesystem.getSeparator(),
+                target_file_path:target.join(Ti.Filesystem.getSeparator()) + Ti.Filesystem.getSeparator(),
                 info_a:'',
                 info_b:'',
                 settings:model_dta.settings,
@@ -125,7 +126,7 @@ define([
             }
 
             _.each(model_dta.constraints, function (c) {
-                var filename = c.nativePath().split(Titanium.Filesystem.getSeparator()).pop();
+                var filename = c.nativePath().split(Ti.Filesystem.getSeparator()).pop();
                 dta.constraints.push(filename);
             });
 
@@ -183,6 +184,15 @@ define([
             this.model.trigger('change:settings', settings);
             this.model.trigger('change:all');
         },
+        toggle_debugLines:function(){
+            var settings = this.model.get('settings');
+            settings.debugLines = !settings.debugLines;
+            this.model.set({
+                settings:settings
+            });
+            this.model.trigger('change:settings', settings);
+            this.model.trigger('change:all');
+        },
         toggle_minify:function () {
             var settings = this.model.get('settings');
             settings.minify = !settings.minify;
@@ -209,14 +219,14 @@ define([
             var sourcefile = this.model.get('output_file');
             if (sourcefile == null) {
                 //Take path of the LESS file.
-                abs = this.model.get('absolute_path').split(Titanium.Filesystem.getSeparator());
+                abs = this.model.get('absolute_path').split(Ti.Filesystem.getSeparator());
                 filename = abs.pop();
             } else {
                 //Take path of the CSS file.
-                abs = sourcefile.nativePath().split(Titanium.Filesystem.getSeparator());
+                abs = sourcefile.nativePath().split(Ti.Filesystem.getSeparator());
                 filename = abs.pop();
             }
-            abs = abs.join(Titanium.Filesystem.getSeparator());
+            abs = abs.join(Ti.Filesystem.getSeparator());
 
             var options = {
                 title:'Select target CSS file',
@@ -226,8 +236,8 @@ define([
                 path:abs
             }
 
-            Titanium.UI.currentWindow.openSaveAsDialog(function (selected_path) {
-                var css_file = Titanium.Filesystem.getFile(selected_path);
+            Ti.UI.currentWindow.openSaveAsDialog(function (selected_path) {
+                var css_file = Ti.Filesystem.getFile(selected_path);
                 model.set({
                     output_file:css_file
                 });
@@ -284,14 +294,14 @@ define([
                             var sourcefile = model.get('output_file');
                             if (sourcefile == null) {
                                 //Take path of the LESS file.
-                                abs = model.get('absolute_path').split(Titanium.Filesystem.getSeparator());
+                                abs = model.get('absolute_path').split(Ti.Filesystem.getSeparator());
                                 filename = abs.pop();
                             } else {
                                 //Take path of the CSS file.
-                                abs = sourcefile.nativePath().split(Titanium.Filesystem.getSeparator());
+                                abs = sourcefile.nativePath().split(Ti.Filesystem.getSeparator());
                                 filename = abs.pop();
                             }
-                            abs = abs.join(Titanium.Filesystem.getSeparator());
+                            abs = abs.join(Ti.Filesystem.getSeparator());
 
                             var options = {
                                 title:'Select target CSS file',
@@ -301,8 +311,8 @@ define([
                                 path:abs
                             }
 
-                            Titanium.UI.currentWindow.openSaveAsDialog(function (selected_path) {
-                                var css_file = Titanium.Filesystem.getFile(selected_path);
+                            Ti.UI.currentWindow.openSaveAsDialog(function (selected_path) {
+                                var css_file = Ti.Filesystem.getFile(selected_path);
                                 model.set({
                                     output_file:css_file
                                 });
@@ -410,14 +420,14 @@ define([
 
 
     //Configuring the Tray Symbol.
-    var win = Titanium.UI.getMainWindow();
-    win.addEventListener(Titanium.MINIMIZED, function (e) {
+    var win = Ti.UI.getMainWindow();
+    win.addEventListener(Ti.MINIMIZED, function (e) {
         e.preventDefault();
         win.unminimize();
         win.hide();
     });
     //When someone clicks on the tray, bring the main window back on screen.
-    var tray_icon = Titanium.UI.addTray('img/icon-tray.png', function (e) {
+    var tray_icon = Ti.UI.addTray('img/icon-tray.png', function (e) {
         win.show();
         win.unminimize();
     });
