@@ -45,7 +45,7 @@ define([
         var diff = date_diff(in_date, new Date());
 
         if (diff < 30) return 'A few seconds ago';
-        if (diff < 60) return 'About a minute ago';
+        if (diff < 120) return 'About a minute ago';
         if (diff < 300) return Math.floor(diff / 60) + ' minutes ago';
         if (diff < 3600 * 5) return time;
         return filedate_str;
