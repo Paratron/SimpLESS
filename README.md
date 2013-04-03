@@ -65,3 +65,11 @@ Download Builds
 Download builds for every platform under http://wearekiss.com/simpless/
 
 
+
+V1.5-Alpha (edge)
+---------------
+
+This versions is for testing and have may have bugs.
+
+- http://dev.aliencom.net/SimpLESS/SimpLESS.app.zip
+- http://dev.aliencom.net/SimpLESS/SimpLESS.msi.zip
