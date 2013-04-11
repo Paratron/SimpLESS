@@ -6,12 +6,6 @@
 define(['modules/compiler','modules/File_Model'], function (compiler,File_Model) {
     var observed_files = new Backbone.Collection();
 
-    var setting_defaults = {
-        minify:true,
-        prefix:false,
-        love:true
-    };
-
     /**
      * Will get a file by a relative path to another one.
      * Originally this should work by calling [ti_file].resolve() but it doesnt. :/
@@ -91,13 +85,7 @@ define(['modules/compiler','modules/File_Model'], function (compiler,File_Model)
 
         observed_files.add(new File_Model({
             input_file:ti_file_obj,
-            constraints:find_constraints(ti_file_obj),
-            //TODO : not sure we need to add these settings here.
-            settings:{
-                minify:setting_defaults.minify,
-                prefix:setting_defaults.prefix,
-                love:setting_defaults.love
-            }
+            constraints:find_constraints(ti_file_obj)
         }));
         to_storage();
     }
