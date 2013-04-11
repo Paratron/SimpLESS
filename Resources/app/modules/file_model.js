@@ -3,7 +3,8 @@ define([], function () {
     var setting_defaults = {
         minify:true,
         prefix:false,
-        love:true
+        love:true,
+        lineDebug:false
     };
 
     var File_Model = Backbone.Model.extend({
@@ -13,10 +14,12 @@ define([], function () {
             last_compilation:0,
             absolute_path:'',
             constraints:[],
+            skipStorage:false,
             settings:{
                 minify:setting_defaults.minify,
                 prefix:setting_defaults.prefix,
                 love:setting_defaults.love,
+                lineDebug:setting_defaults.lineDebug,
                 output_path:''
             },
             error:null,
@@ -46,11 +49,13 @@ define([], function () {
             }
 
             this.bind('change:settings', function (dta) {
-                dta.output_file = this.get('output_file').nativePath();
-                localStorage.setItem('file_' + abspath, JSON.stringify(dta))
+                if(this.get('skipStorage') !== true){
+                    dta.output_file = this.get('output_file').nativePath();
+                    localStorage.setItem('file_' + abspath, JSON.stringify(dta))
+                }
             }, this);
 
-            if (this.get('output_file') == null) {
+            if (this.get('output_file') == null && this.get('skipStorage') !== true) {
                 var newfile = Ti.Filesystem.getFile(this.get('input_file').nativePath().replace('.less', '.css'));
                 this.set({
                     output_file:newfile
