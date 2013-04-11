@@ -6,19 +6,29 @@
 define(['modules/compiler',
         'text!templates/tester-modal.html'], function (compiler, tmp_src_modalHtml) {
 
-    console.log('hi i am in tester');
+    console.log('to run tests, write : startTests() in the console.');
 
-    function startTests(){
+    window.startTests = function(){
         $body = $('body');
         $body.on('click','#test-modal a.close',function(e){
             $('#test-modal').remove();
+            QUnit.reset();
         });
         $elm = $body.append(tmp_src_modalHtml);
 
 
-    }
+        QUnit.init();
+        QUnit.load();
 
-    return{
-        startTests:startTests
-    }
+        test( "hello test", function() {
+            ok( 1 == "1", "Passed!" );
+        });
+        test( "a basic test example", function() {
+            var value = "hello";
+            equal( value, "hello", "We expect value to be hello" );
+        });
+        QUnit.start();
+
+        return "Starting Tests...";
+    };
 })

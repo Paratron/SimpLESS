@@ -10,8 +10,6 @@ define([
     'text!templates/list-item.html'
 ], function (storage, compiler, tester, tmp_src_listitem) {
 
-    tester.startTests();
-
     var tmp_listitem = _.template(tmp_src_listitem);
 
     /**
