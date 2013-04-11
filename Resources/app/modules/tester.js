@@ -20,13 +20,23 @@ define(['modules/compiler',
         QUnit.init();
         QUnit.load();
 
-        test( "hello test", function() {
-            ok( 1 == "1", "Passed!" );
-        });
-        test( "a basic test example", function() {
+        module('Simplest Tests');
+
+        test( "Hello World Test", function() {
             var value = "hello";
             equal( value, "hello", "We expect value to be hello" );
         });
+
+        asyncTest( "asynchronous test: one second later!", function() {
+            expect( 1 );
+
+            setTimeout(function() {
+                ok( true, "Passed and ready to resume!" );
+                start();
+            }, 1000);
+        });
+
+
         QUnit.start();
 
         return "Starting Tests...";
