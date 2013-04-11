@@ -6,8 +6,10 @@
 define([
     'modules/storage',
     'modules/compiler',
+    'modules/tester',
     'text!templates/list-item.html'
-], function (storage, compiler, tmp_src_listitem) {
+], function (storage, compiler, tester, tmp_src_listitem) {
+
     var tmp_listitem = _.template(tmp_src_listitem);
 
     /**
