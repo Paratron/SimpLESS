@@ -38,16 +38,9 @@ define(['modules/ui'], function (ui) {
 
             if (current_less != actual_version) {
                 if (confirm('There is a new less version available (v' + actual_version + ').\nDownload it now into SimpLESS?')) {
-                    $.get('https://raw.github.com/less/less.js/master/dist/less-' + actual_version + '.js', function (response) {
-                        require(['modules/less_patcher'], function (patcher) {
-                            var patched_code = patcher.patch(response);
-                            if (!patched_code) {
-                                alert('There was a problem patching the less.js file. =(');
-                                return;
-                            }
-                            lessfile.write(patched_code);
-                            alert('Updating to less v' + actual_version + ' was successful. Restart SimpLESS to apply the update.');
-                        });
+                    $.get('https://raw.github.com/less/less.js/master/dist/less-' + actual_version + '.min.js', function (response) {
+                        lessfile.write(response);
+                        alert('Updating to less v' + actual_version + ' was successful. Restart SimpLESS to apply the update.');
                     });
                 }
             }
