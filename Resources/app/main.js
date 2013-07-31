@@ -28,19 +28,17 @@ define(['modules/ui'], function (ui) {
     current_less = result[1];
 
     $.get('http://lesscss.org', function (response) {
-        //	https://raw.github.com/cloudhead/less.js/master/dist/less-1.3.3.min.js
-        var download_regex = /https:\/\/raw.github.com\/cloudhead\/less.js\/master\/dist\/less-[\d\.]+\.min\.js/;
+        var download_regex = /https:\/\/raw.github.com\/less\/less.js\/master\/dist\/less-[\d\.]+\.min\.js/;
         var version_regex = /-([\d\.]+)\.min/;
 
         var result = download_regex.exec(response);
-        var download_link = result[0];
         if (result !== null) {
             var result2 = version_regex.exec(result[0]);
             var actual_version = result2[1];
 
             if (current_less != actual_version) {
                 if (confirm('There is a new less version available (v' + actual_version + ').\nDownload it now into SimpLESS?')) {
-                    $.get('https://raw.github.com/cloudhead/less.js/master/dist/less-' + actual_version + '.js', function (response) {
+                    $.get('https://raw.github.com/less/less.js/master/dist/less-' + actual_version + '.js', function (response) {
                         require(['modules/less_patcher'], function (patcher) {
                             var patched_code = patcher.patch(response);
                             if (!patched_code) {

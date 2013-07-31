@@ -133,6 +133,9 @@ define(['less', '3p/cleancss'], function (less, cleancss) {
             }
             catch (e) {
                 console.log(e);
+                model.set({ error:e });
+                model.trigger('compilation:error', e);
+                model.collection.trigger('compilation:error', e);
             }
         }
     }
