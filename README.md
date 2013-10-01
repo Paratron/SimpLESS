@@ -23,7 +23,7 @@ v 1.4
 - removed the compilation options from the lesscode and implemented it into the UI
 - the target CSS file to compile to can now be chosen from the UI
 - implemented usage of http://prefixr.com for automatic CSS3 vendor prefixing
-- embedded the most recent version of less - v 1.3.0
+- embedded the most recent version of less - v 1.4.2
 - implemented a automatic updater for the less compiler
 - if a LESS file starts with a CSS block comment, SimpLESS will keep that comment after minification (i.e. for Wordpress)
 - metric tonne of bugfixes
