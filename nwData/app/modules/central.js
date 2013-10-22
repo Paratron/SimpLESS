@@ -185,7 +185,9 @@ define([], function (){
                         return;
                     }
 
-                    css = tree.toCSS(that.get('doMinify'));
+                    css = tree.toCSS({
+                        compress: that.get('doMinify')
+                    });
 
                     nodeFS.writeFile(that.get('outputPath'), css);
 

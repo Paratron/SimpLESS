@@ -47,7 +47,21 @@ define(['modules/central', 'text!templates/filesList.html'], function (central, 
                                 m.set('doLove', !m.get('doLove'));
                             },
                             'click .pickOutputPath': function (e, i, m){
-                                $('#saveFile').attr('nwworkingdir', m.get('outputPath')).attr('nwsaveas', m.get('outputPath')).trigger('click');
+                                var workingDir;
+
+                                workingDir = nodePath.dirname(m.get('outputPath'));
+
+                                if(process.platform === 'win32'){
+                                    workingDir = workingDir.replace(/\//g, '\\');
+                                }
+
+                                $('#saveFile')
+                                    .attr('nwworkingdir', workingDir)
+                                    .attr('nwsaveas', nodePath.basename(m.get('outputPath')))
+                                    .trigger('click')
+                                    .one('change', function(){
+                                        m.set('outputPath', $(this).val().replace(/\\/g, '/'));
+                                    });
                             }
                         }
                     }
