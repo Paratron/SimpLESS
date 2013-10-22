@@ -1,0 +1,25 @@
+{
+    "name": "SimpLESS",
+    "main": "index.html",
+    "description": "A simple app to compile your LESS files into CSS.",
+    "version": "2.0",
+    "keywords": ["less", "css", "compiler"],
+
+    "update": {
+        "url": "http://wearekiss.com/simpless-update.json"
+    },
+
+    "window": {
+        "title": "SimpLESS 2.0",
+        "icon": "icon.png",
+        "toolbar": true,
+        "frame": true,
+        "width": 700,
+        "height": 500,
+        "position": "mouse",
+        "min_width": 600,
+        "min_height": 400,
+        "max_width": 3000,
+        "max_height": 3000
+    }
+}

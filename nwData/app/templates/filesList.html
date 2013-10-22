@@ -1,0 +1,37 @@
+<%
+        var classname = '';
+        var msg = modo.Calendar.prototype.dateToString('d.m.Y - H:i:s', lastChange);
+        switch(state){
+            case 1:
+                classname = 'success';
+                msg = 'Compilation successful';
+            break;
+            case 2:
+                classname = 'error';
+                console.log(error);
+                if(error.type === 'File'){
+                    msg = '<b>' + error.message + '</b> in ' + error.filename.replace(inputFolder, '') + ' <b>on line ' + error.line + '</b>';
+                }
+            break;
+        }
+%><div class="<%= classname %>">
+    <div class="headBar">
+        <h3><%= fileName %></h3>
+        <% if(includes){ %><span class="includes">(+ <%= includes %></span><% } %>
+        <button class="recompile" title="Recompile now"></button>
+        <button class="remove" title="Remove from watch list"></button>
+    </div>
+    <div class="bar">
+        <span class="inputPath"><%= inputFolder %><b><%= fileName %></b></span>
+        <span class="status"><%= msg %></span>
+    </div>
+    <div class="bar">
+        <span class="outputPath"><%= outputPath %></span>
+        <button class="pickOutputPath" title="Change target file"></button>
+
+        <div class="options">
+            <button class="minify <%= doMinify ? 'active' : '' %>" title="Toggle CSS minification"></button>
+            <button class="love <%= doLove ? 'active' : '' %>" title="Toggle SimpLESS CSS comment"></button>
+        </div>
+    </div>
+</div>

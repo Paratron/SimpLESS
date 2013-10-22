@@ -1,0 +1,233 @@
+html {
+  height: 100%;
+}
+.mdo-root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+.mdo-element {
+  display: block;
+}
+.mdo-container-layout-block .mdo-element {
+  display: block;
+}
+.mdo-container-layout-block .mdo-button {
+  display: block;
+}
+.mdo-container-layout-inline .mdo-element {
+  vertical-align: top;
+  display: inline-block;
+}
+.mdo-flexcontainer {
+  width: 100%;
+  height: 100%;
+}
+.mdo-flexcontainer,
+.mdo-container-layout-block .mdo-flexcontainer {
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+.mdo-flexcontainer .mdo-flexcontainer,
+.mdo-container-layout-block .mdo-flexcontainer .mdo-flexcontainer {
+  height: auto;
+}
+.mdo-flex-horizontal {
+  height: 100%;
+  -moz-flex-direction: row;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+}
+.mdo-flex-horizontal .mdo-element {
+  -moz-flex: 0 1 auto;
+  -webkit-flex: 0 1 auto;
+  -ms-flex: 0 1 auto;
+  flex: 0 1 auto;
+}
+.mdo-flex-vertical {
+  width: 100%;
+  -moz-flex-direction: column;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+.mdo-flex-horizontal .mdo-flexible,
+.mdo-flex-vertical .mdo-flexible {
+  -moz-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+.mdo-flex-fallback.mdo-flexcontainer {
+  display: -moz-box;
+  display: -webkit-box;
+  display: -ms-box;
+  display: box;
+}
+.mdo-flex-fallback.mdo-flex-horizontal {
+  -moz-box-orient: horizontal;
+  -webkit-box-orient: horizontal;
+  -ms-box-orient: horizontal;
+  box-orient: horizontal;
+}
+.mdo-flex-fallback.mdo-flex-vertical {
+  -moz-box-orient: vertical;
+  -webkit-box-orient: vertical;
+  -ms-box-orient: vertical;
+  box-orient: vertical;
+}
+.mdo-flex-fallback.mdo-flex-horizontal .mdo-element,
+.mdo-flex-fallback.mdo-flex-vertical .mdo-element {
+  -moz-box-flex: auto;
+  -webkit-box-flex: auto;
+  -ms-box-flex: auto;
+  box-flex: auto;
+}
+.mdo-flex-fallback.mdo-flex-horizontal .mdo-flexible,
+.mdo-flex-fallback.mdo-flex-vertical .mdo-flexible {
+  -moz-box-flex: 1;
+  -webkit-box-flex: 1;
+  -ms-box-flex: 1;
+  box-flex: 1;
+}
+.mdo-flex-js-fallback .mdo-flex-horizontal > .mdo-element {
+  display: inline;
+  display: inline-block;
+  zoom: 1;
+  vertical-align: top;
+  height: 100%;
+}
+.mdo-button {
+  display: inline-block;
+  cursor: pointer;
+}
+.mdo-dropdown {
+  position: relative;
+}
+.mdo-dropdown .mdo-dropdown-button,
+.mdo-dropdown .mdo-list-item {
+  cursor: pointer;
+}
+.mdo-dropdown .mdo-dropdown-list {
+  display: none;
+  position: absolute;
+  top: 100%;
+}
+.mdo-dropdown.mdo-dropdown-dropped .mdo-dropdown-list {
+  display: block;
+}
+.mdo-calendar .mdo-calendar-selector {
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: flex;
+  -moz-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+.mdo-calendar .mdo-calendar-selector .mdo-calendar-label {
+  -moz-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+  text-align: center;
+}
+.mdo-calendar .mdo-calendar-field {
+  display: table;
+  width: 100%;
+}
+.mdo-calendar .mdo-calendar-field-row {
+  display: table-row;
+}
+.mdo-calendar .mdo-calendar-day {
+  cursor: pointer;
+  display: table-cell;
+  text-align: center;
+  width: 14.29%;
+}
+.mdo-calendar .mdo-calendar-day:hover {
+  outline: #000 dashed 1px;
+}
+.mdo-calendar .mdo-calendar-day-disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.mdo-calendar .mdo-calendar-day-disabled:hover {
+  outline: none;
+}
+.mdo-calendar .mdo-calendar-day-today {
+  font-weight: bold;
+}
+.mdo-calendar .mdo-calendar-day-selected {
+  outline: #f00 solid 1px;
+}
+.mdo-popup {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #fff;
+}
+.mdo-popup-mask {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.mdo-input-text {
+  display: inline-block;
+}
+.mdo-grid {
+  display: table;
+}
+.mdo-grid-row {
+  display: table-row;
+}
+.mdo-grid-cell {
+  display: table-cell;
+}
+.mdo-menu {
+  position: absolute;
+}
+.mdo-menu-baseline {
+  position: static;
+}
+.mdo-menu-baseline .mdo-menu-item {
+  display: inline-block;
+}
+.mdo-menu .mdo-hotkey {
+  text-decoration: underline;
+}
+.mdo-notificationcontainer {
+  position: absolute;
+}
+.mdo-notificationcontainer.mdo-pos-bottom-left {
+  bottom: 0;
+  left: 0;
+}
+.mdo-notificationcontainer.mdo-pos-bottom-right {
+  bottom: 0;
+  right: 0;
+}
+.mdo-notificationcontainer.mdo-pos-top-right {
+  top: 0;
+  right: 0;
+}
+.mdo-notificationcontainer.mdo-pos-top-left {
+  top: 0;
+  left: 0;
+}
+.mdo-notificationcontainer.mdo-direction-right {
+  direction: ltr;
+}
+.mdo-notificationcontainer.mdo-direction-right .mdo-notification {
+  display: inline-block;
+}
+.mdo-notificationcontainer.mdo-direction-left {
+  direction: rtl;
+}
+.mdo-notificationcontainer.mdo-direction-left .mdo-notification {
+  display: inline-block;
+}
