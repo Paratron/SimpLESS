@@ -10,7 +10,8 @@ define([], function (){
         nodeLESS,
         pathSeparator;
 
-    Backbone.sync = function(){};
+    Backbone.sync = function (){
+    };
 
     nodeFS = nodeRequire('fs');
     nodeLESS = nodeRequire('less');
@@ -49,13 +50,21 @@ define([], function (){
                 this.watcher.close();
             });
 
-            this.watcher = nodeFS.watch(this.get('fileName'), function (event){
+            this.watcher = nodeFS.watch(this.get('fileName'), function (event, fileName){
                 if(event === 'change'){
                     that.get('listModel').compile();
                     return;
                 }
 
-                that.destroy();
+                setTimeout(function (){
+                    nodeFS.exists(that.get('fileName'), function (result){
+                        if(result){
+                            return;
+                        }
+                        console.log(that.get('fileName') + ' doesnt exist anymore. Stop watching.');
+                        that.destroy();
+                    });
+                }, 1);
             });
 
             console.log('Now watching ' + this.get('fileName'));
@@ -142,7 +151,7 @@ define([], function (){
             importedFiles = this.getImportedPaths(this.get('inputPath'), true);
 
             //First, try to add all files again. Already watched files will be ignored.
-            for(i = 0; i < importedFiles.length; i++){
+            for (i = 0; i < importedFiles.length; i++) {
                 this.get('fileWatchers').add({
                     fileName: importedFiles[i],
                     listModel: that
@@ -150,7 +159,7 @@ define([], function (){
             }
 
             //Now, remove all watchers of files, no longer being imported.
-            this.get('fileWatchers').each(function(watcher){
+            this.get('fileWatchers').each(function (watcher){
                 if(watcher.get('fileName') === that.get('inputPath')){
                     return;
                 }
@@ -262,7 +271,7 @@ define([], function (){
          * Stops the file watcher before the object is being destroyed.
          */
         stopWatching: function (){
-            this.get('fileWatchers').each(function(watcher){
+            this.get('fileWatchers').each(function (watcher){
                 watcher.destroy();
             });
         }

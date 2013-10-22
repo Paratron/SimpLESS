@@ -1,22 +1,10 @@
-@font-face {
-  font-family: 'folks';
-  src: url('../font/Folks-Light-webfont.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'folks';
-  src: url('../font/Folks-Bold-webfont.woff') format('woff');
-  font-weight: bold;
-  font-style: normal;
-}
 html,
 body {
   height: 100%;
   margin: 0;
   padding: 0;
   background: url(../img/grain.png) #f8fbfe;
-  font-family: "folks", serif;
+  font-family: "Verdana", serif;
   font-size: 12px;
   overflow: hidden;
 }
@@ -33,7 +21,7 @@ button {
 }
 .mdo-list-item {
   position: relative;
-  background-image: url(img/grain.png);
+  background-image: url(../img/grain.png);
   display: block;
   padding: 10px;
   padding-bottom: 5px;
