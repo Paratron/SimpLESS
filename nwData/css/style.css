@@ -1,2 +1,182 @@
-@font-face{font-family:'folks';src:url('../font/Folks-Light-webfont.woff') format('woff');font-weight:400;font-style:normal}@font-face{font-family:'folks';src:url('../font/Folks-Bold-webfont.woff') format('woff');font-weight:700;font-style:normal}html,body{height:100%;margin:0;padding:0;background:url(../img/grain.png) #f8fbfe;font-family:"folks",serif;font-size:12px;overflow:hidden}body,button{-webkit-font-smoothing:antialiased}.filesList{position:relative;background:#fff}.saveFile{display:none}.mdo-list-item{position:relative;background-image:url(img/grain.png);display:block;padding:10px;padding-bottom:5px;background-color:#f8fbfe;border-bottom:#e6f0fa solid 1px}.mdo-list-item:nth-child(2n){background-color:#fff}.mdo-list-item button{display:inline-block;width:16px;height:16px;border:0;background:transparent;cursor:pointer}.mdo-list-item h3{display:inline}.mdo-list-item .bar{margin-bottom:5px;position:relative}.mdo-list-item .headBar{margin-bottom:10px}.mdo-list-item .recompile{background:url(../img/recompile.png) top left no-repeat;margin-left:5px;vertical-align:top}.mdo-list-item .recompile:hover{background-position:bottom left}.mdo-list-item .remove{float:right;background:url(../img/delete.png) top left}.mdo-list-item .remove:hover{background-position:bottom left}.mdo-list-item .pickOutputPath{background:url(../img/browse.png) top left;margin-left:5px;vertical-align:middle}.mdo-list-item .pickOutputPath:hover{background-position:bottom left}.mdo-list-item .status{position:absolute;top:0;right:0;color:#527aa3;font-weight:700}.mdo-list-item .options{position:absolute;top:0;right:0}.mdo-list-item .options button{height:11px;background:url(../img/options.png) no-repeat}.mdo-list-item .options .minify{width:28px;background-position:-31px 0}.mdo-list-item .options .minify.active{background-position:-31px -11px}.mdo-list-item .options .love{width:21px;background-position:-61px 0}.mdo-list-item .options .love.active{background-position:-61px -11px}.mdo-list-item .inputPath,.mdo-list-item .outputPath{padding-left:12px;color:#9e9e9e}.mdo-list-item .inputPath{background:url(../img/in.png) left center no-repeat}.mdo-list-item .outputPath{background:url(../img/out.png) left center no-repeat}.success .status{color:#8cbb1c}.success .outputPath{background:url(../img/compiled.png) left center no-repeat}.error .status{color:#fc2a24;font-weight:400}.error .status b{color:#a11f1c}.error .outputPath{background:url(../img/error.png) left center no-repeat;color:#fc2a24}.mdo-list-empty-element{position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;padding:0;background:#c7ecf3 url(../img/welcome.png) center no-repeat}.bottomBar{height:29px;background-color:#77a2cf;border-top:#75a0cd solid 1px;background-image:-webkit-linear-gradient(bottom, #5781ad, #80afdf);background-image:-moz-linear-gradient(bottom, #5781ad, #80afdf);background-image:-o-linear-gradient(bottom, #5781ad, #80afdf);background-image:linear-gradient(to top, #5781ad, #80afdf)}.logo{padding:6px 10px;border-top:#a6c7e9;margin-top:1px;color:#fff;font-size:14px;text-shadow:#4c6d91 0 -1px 0}.logo b{color:#385e85;font-weight:700;font-size:16px;text-shadow:#85acd7 0 1px 0}
-/* This beautiful CSS-File has been crafted with LESS (lesscss.org) and compiled by simpLESS (wearekiss.com/simpless) */
+@font-face {
+  font-family: 'folks';
+  src: url('../font/Folks-Light-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'folks';
+  src: url('../font/Folks-Bold-webfont.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: url(../img/grain.png) #f8fbfe;
+  font-family: "folks", serif;
+  font-size: 12px;
+  overflow: hidden;
+}
+body,
+button {
+  -webkit-font-smoothing: antialiased;
+}
+.filesList {
+  position: relative;
+  background: #fff;
+}
+.saveFile {
+  display: none;
+}
+.mdo-list-item {
+  position: relative;
+  background-image: url(img/grain.png);
+  display: block;
+  padding: 10px;
+  padding-bottom: 5px;
+  background-color: #f8fbfe;
+  border-bottom: #e6f0fa solid 1px;
+}
+.mdo-list-item:nth-child(2n) {
+  background-color: #fff;
+}
+.mdo-list-item button {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+.mdo-list-item h3 {
+  display: inline;
+}
+.mdo-list-item .includes {
+  font-weight: bold;
+  color: #9e9e9e;
+}
+.mdo-list-item .bar {
+  margin-bottom: 5px;
+  position: relative;
+}
+.mdo-list-item .headBar {
+  margin-bottom: 10px;
+}
+.mdo-list-item .recompile {
+  background: url(../img/recompile.png) top left no-repeat;
+  margin-left: 5px;
+  vertical-align: top;
+}
+.mdo-list-item .recompile:hover {
+  background-position: bottom left;
+}
+.mdo-list-item .remove {
+  float: right;
+  background: url(../img/delete.png) top left;
+}
+.mdo-list-item .remove:hover {
+  background-position: bottom left;
+}
+.mdo-list-item .pickOutputPath {
+  background: url(../img/browse.png) top left;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+.mdo-list-item .pickOutputPath:hover {
+  background-position: bottom left;
+}
+.mdo-list-item .status {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #527aa3;
+  font-weight: bold;
+}
+.mdo-list-item .options {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.mdo-list-item .options button {
+  height: 11px;
+  background: url(../img/options.png) no-repeat;
+}
+.mdo-list-item .options .minify {
+  width: 28px;
+  background-position: -31px 0;
+}
+.mdo-list-item .options .minify.active {
+  background-position: -31px -11px;
+}
+.mdo-list-item .options .love {
+  width: 21px;
+  background-position: -61px 0;
+}
+.mdo-list-item .options .love.active {
+  background-position: -61px -11px;
+}
+.mdo-list-item .inputPath,
+.mdo-list-item .outputPath {
+  padding-left: 12px;
+  color: #9e9e9e;
+}
+.mdo-list-item .inputPath {
+  background: url(../img/in.png) left center no-repeat;
+}
+.mdo-list-item .outputPath {
+  background: url(../img/out.png) left center no-repeat;
+}
+.success .status {
+  color: #8cbb1c;
+}
+.success .outputPath {
+  background: url(../img/compiled.png) left center no-repeat;
+}
+.error .status {
+  color: #fc2a24;
+  font-weight: normal;
+}
+.error .status b {
+  color: #a11f1c;
+}
+.error .outputPath {
+  background: url(../img/error.png) left center no-repeat;
+  color: #fc2a24;
+}
+.mdo-list-empty-element {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: #c7ecf3 url(../img/welcome.png) center no-repeat;
+}
+.bottomBar {
+  height: 29px;
+  background-color: #77a2cf;
+  border-top: #75a0cd solid 1px;
+  background-image: -webkit-linear-gradient(bottom, #5781ad, #80afdf);
+  background-image: -moz-linear-gradient(bottom, #5781ad, #80afdf);
+  background-image: -o-linear-gradient(bottom, #5781ad, #80afdf);
+  background-image: linear-gradient(to top, #5781ad, #80afdf);
+}
+.logo {
+  padding: 6px 10px;
+  border-top: #a6c7e9;
+  margin-top: 1px;
+  color: #fff;
+  font-size: 14px;
+  text-shadow: #4c6d91 0 -1px 0;
+}
+.logo b {
+  color: #385e85;
+  font-weight: bold;
+  font-size: 16px;
+  text-shadow: #85acd7 0 1px 0;
+}

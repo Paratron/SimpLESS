@@ -1,6 +1,10 @@
 <%
         var classname = '';
+        var includes = 0;
         var msg = modo.Calendar.prototype.dateToString('d.m.Y - H:i:s', lastChange);
+
+        includes = fileWatchers.length - 1;
+
         switch(state){
             case 1:
                 classname = 'success';
@@ -16,8 +20,9 @@
         }
 %><div class="<%= classname %>">
     <div class="headBar">
-        <h3><%= fileName %></h3>
-        <% if(includes){ %><span class="includes">(+ <%= includes %></span><% } %>
+        <h3><%= fileName %>
+        <% if(includes){ %><span class="includes">(+ <%= includes %>)</span><% } %>
+        </h3>
         <button class="recompile" title="Recompile now"></button>
         <button class="remove" title="Remove from watch list"></button>
     </div>
