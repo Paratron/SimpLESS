@@ -56,7 +56,9 @@ define([], function (){
                     return;
                 }
 
-                setTimeout(function (){
+                //Somehow broken?!
+                //TODO: fix this
+                /*setTimeout(function (){
                     nodeFS.exists(that.get('fileName'), function (result){
                         if(result){
                             return;
@@ -64,7 +66,7 @@ define([], function (){
                         console.log(that.get('fileName') + ' doesnt exist anymore. Stop watching.');
                         that.destroy();
                     });
-                }, 1);
+                }, 1);*/
             });
 
             console.log('Now watching ' + this.get('fileName'));
@@ -221,7 +223,7 @@ define([], function (){
             fs = nodeRequire('fs');
             path = nodeRequire('path');
 
-            regex = /^[^/]*@import.+?["'](.+?)["']/g;
+            regex = /^[^\n/]*@import.+?["'](.+?)["']/gm;
             imports = [];
             filePath = path.dirname(filename);
 

@@ -46,7 +46,7 @@
 
                     appender = originalURL.search(/\?/) > -1 ? '&' : '?';
 
-                    socket.on(sheet.href.split('/').pop(), function (){
+                    socket.on(sheet.href.split('/').pop().split('?')[0], function (){
                         console.log('SimpLESS: reloading ' + originalURL);
                         domElm.href = originalURL + appender + Math.random().toString().split('.').pop();
                     });
