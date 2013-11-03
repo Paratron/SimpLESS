@@ -132,12 +132,12 @@ define([], function (){
 
             console.log('Imports: ', this.getImportedPaths(this.get('inputPath')));
         },
-        isWatching: function(filename){
+        isWatching: function (filename){
             var result;
 
             result = false;
 
-            this.get('fileWatchers').each(function(f){
+            this.get('fileWatchers').each(function (f){
                 if(f.get('fileName') === filename){
                     result = true;
                     return false;
@@ -298,7 +298,18 @@ define([], function (){
      * @type {*}
      */
     central._collections.Files = Backbone.Collection.extend({
-        model: central._models.File
+        model: central._models.File,
+        initialize: function (){
+            var that = this;
+
+            this.on('add remove', function (){
+                var files;
+
+                files = that.pluck('inputPath');
+
+                localStorage.setItem('fileList', JSON.stringify(files));
+            });
+        }
     });
 
     /**
@@ -306,6 +317,25 @@ define([], function (){
      * @type {central._collections.Files}
      */
     central.observedFiles = new central._collections.Files();
+
+    //Already something in localStorage?
+    (function (){
+        'use strict';
+
+        var files;
+
+        files = localStorage.getItem('fileList');
+
+        if(files){
+            files = JSON.parse(files);
+
+            _.each(files, function(filename){
+                central.observedFiles.add({
+                    inputPath: filename
+                });
+            });
+        }
+    })();
 
     return central;
 });
