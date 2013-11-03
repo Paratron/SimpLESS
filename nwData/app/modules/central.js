@@ -59,18 +59,6 @@ define([], function (){
                     that.get('listModel').compile();
                     return;
                 }
-
-                //Somehow broken?!
-                //TODO: fix this
-                /*setTimeout(function (){
-                 nodeFS.exists(that.get('fileName'), function (result){
-                 if(result){
-                 return;
-                 }
-                 console.log(that.get('fileName') + ' doesnt exist anymore. Stop watching.');
-                 that.destroy();
-                 });
-                 }, 1);*/
             });
 
             console.log('Now watching ' + this.get('fileName'));
@@ -85,6 +73,7 @@ define([], function (){
 
     /**
      * Default Model to keep watching on LESS files.
+     * TODO: Detect if files have been deleted/renamed.
      * @type {*}
      */
     central._models.File = Backbone.Model.extend({
@@ -114,6 +103,7 @@ define([], function (){
 
             this.on('change:outputPath', function (){
                 this.set('outputFileName', this.get('outputPath').split('/').pop());
+                this.getFileMTime();
             });
 
             this.set('outputPath', path.join('/') + '/' + this.get('fileName').replace('.less', '.css'));
@@ -217,6 +207,8 @@ define([], function (){
 
                     central.trigger('compilation', that);
 
+                    that.getFileMTime();
+
                     setTimeout(function (){
                         that.set('state', 0);
                     }, 3000);
@@ -285,7 +277,7 @@ define([], function (){
 
             that = this;
 
-            nodeFS.stat(that.get('inputPath'), function (err, stat){
+            nodeFS.stat(that.get('outputPath'), function (err, stat){
                 if(stat){
                     that.set('lastChange', (new Date(stat.mtime)).getTime());
                 }
