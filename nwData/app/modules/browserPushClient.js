@@ -23,6 +23,8 @@
 
         sheets = document.getElementsByTagName('link');
 
+        console.log('SimpLESS connected.');
+
         for (i = 0; i < document.styleSheets.length; i++) {
             if(document.styleSheets[i].href){
                 (function (sheet){

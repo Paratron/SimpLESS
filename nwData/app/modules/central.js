@@ -8,7 +8,11 @@
 define([], function (){
     var nodeFS,
         nodeLESS,
-        pathSeparator;
+        pathSeparator,
+        console;
+
+    //Catching potential nodeJS namespacing conflicts.
+    console = window.console;
 
     Backbone.sync = function (){
     };
@@ -59,14 +63,14 @@ define([], function (){
                 //Somehow broken?!
                 //TODO: fix this
                 /*setTimeout(function (){
-                    nodeFS.exists(that.get('fileName'), function (result){
-                        if(result){
-                            return;
-                        }
-                        console.log(that.get('fileName') + ' doesnt exist anymore. Stop watching.');
-                        that.destroy();
-                    });
-                }, 1);*/
+                 nodeFS.exists(that.get('fileName'), function (result){
+                 if(result){
+                 return;
+                 }
+                 console.log(that.get('fileName') + ' doesnt exist anymore. Stop watching.');
+                 that.destroy();
+                 });
+                 }, 1);*/
             });
 
             console.log('Now watching ' + this.get('fileName'));
@@ -138,6 +142,20 @@ define([], function (){
 
             console.log('Imports: ', this.getImportedPaths(this.get('inputPath')));
         },
+        isWatching: function(filename){
+            var result;
+
+            result = false;
+
+            this.get('fileWatchers').each(function(f){
+                if(f.get('fileName') === filename){
+                    result = true;
+                    return false;
+                }
+            });
+
+            return result;
+        },
         /**
          * Compiles the LESS source to CSS.
          */
@@ -154,10 +172,12 @@ define([], function (){
 
             //First, try to add all files again. Already watched files will be ignored.
             for (i = 0; i < importedFiles.length; i++) {
-                this.get('fileWatchers').add({
-                    fileName: importedFiles[i],
-                    listModel: that
-                });
+                if(!this.isWatching(importedFiles[i])){
+                    this.get('fileWatchers').add({
+                        fileName: importedFiles[i],
+                        listModel: that
+                    });
+                }
             }
 
             //Now, remove all watchers of files, no longer being imported.
