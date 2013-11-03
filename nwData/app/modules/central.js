@@ -340,9 +340,11 @@ define([], function (){
             files = JSON.parse(files);
 
             _.each(files, function (filename){
-                central.observedFiles.add({
-                    inputPath: filename
-                });
+                if(nodeFS.existsSync(filename)){
+                    central.observedFiles.add({
+                        inputPath: filename
+                    });
+                }
             });
         }
     })();
