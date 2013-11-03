@@ -190,6 +190,7 @@ define([], function (){
                     var css;
 
                     if(e){
+                        console.log(e);
                         that.set({
                             state: 2,
                             error: e
@@ -197,9 +198,18 @@ define([], function (){
                         return;
                     }
 
-                    css = tree.toCSS({
-                        compress: that.get('doMinify')
-                    });
+                    try {
+                        css = tree.toCSS({
+                            compress: that.get('doMinify')
+                        });
+                    }
+                    catch(e){
+                        that.set({
+                            state: 2,
+                            error: e
+                        });
+                        return;
+                    }
 
                     nodeFS.writeFile(that.get('outputPath'), css);
 
@@ -329,7 +339,7 @@ define([], function (){
         if(files){
             files = JSON.parse(files);
 
-            _.each(files, function(filename){
+            _.each(files, function (filename){
                 central.observedFiles.add({
                     inputPath: filename
                 });

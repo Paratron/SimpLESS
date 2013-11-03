@@ -12,10 +12,7 @@
             break;
             case 2:
                 classname = 'error';
-                console.log(error);
-                if(error.type === 'File'){
-                    msg = '<b>' + error.message + '</b> in ' + error.filename.replace(inputFolder, '') + ' <b>on line ' + error.line + '</b>';
-                }
+                msg = 'Compilation error';
             break;
         }
 %><div class="<%= classname %>">
@@ -39,4 +36,9 @@
             <button class="love <%= doLove ? 'active' : '' %>" title="Toggle SimpLESS CSS comment"></button>
         </div>
     </div>
+    <% if(state === 2){ %>
+    <div class="errorbox">
+        Error in file: <b><%= error.filename.replace(inputFolder, '') %></b> on line <b><%= error.line %></b>: <%= error.message %>
+    </div>
+    <% } %>
 </div>
