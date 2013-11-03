@@ -59,7 +59,7 @@ define(['modules/central', 'text!templates/filesList.html'], function (central, 
                                     .attr('nwworkingdir', workingDir)
                                     .attr('nwsaveas', nodePath.basename(m.get('outputPath')))
                                     .trigger('click')
-                                    .one('change', function(){
+                                    .one('change', function (){
                                         m.set('outputPath', $(this).val().replace(/\\/g, '/'));
                                     });
                             }
@@ -103,6 +103,32 @@ define(['modules/central', 'text!templates/filesList.html'], function (central, 
         e.preventDefault();
     };
 
+    function readDir(filePath){
+        var i;
+
+        nodeFS.readdir(filePath, function (err, files){
+            if(err){
+                return;
+            }
+
+            if(filePath.substr(-1) !== '/'){
+                filePath += '/';
+            }
+
+            for (i = 0; i < files.length; i++) {
+                if(nodeFS.statSync(filePath + files[i]).isDirectory()){
+                    readDir(filePath + files[i]);
+                    continue;
+                }
+                if(files[i].substr(-5).toLowerCase() === '.less'){
+                    central.observedFiles.add({
+                        inputPath: filePath + files[i]
+                    });
+                }
+            }
+        });
+    }
+
     //Listening for file drops.
     ui.root.el.on('dragover',function (e){
 
@@ -125,23 +151,7 @@ define(['modules/central', 'text!templates/filesList.html'], function (central, 
 
                 if(nodeFS.statSync(filePath).isDirectory()){
                     //Its a folder!
-                    nodeFS.readdir(filePath, function (err, files){
-                        if(err){
-                            return;
-                        }
-
-                        if(filePath.substr(-1) !== '/'){
-                            filePath += '/';
-                        }
-
-                        for (i = 0; i < files.length; i++) {
-                            if(files[i].substr(-5).toLowerCase() === '.less'){
-                                central.observedFiles.add({
-                                    inputPath: filePath + files[i]
-                                });
-                            }
-                        }
-                    });
+                    readDir(filePath);
                 } else {
                     if(filePath.substr(-5).toLowerCase() === '.less'){
                         central.observedFiles.add({
