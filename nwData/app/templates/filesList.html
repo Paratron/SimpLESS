@@ -1,7 +1,13 @@
 <%
         var classname = '';
         var includes = 0;
-        var msg = modo.Calendar.prototype.dateToString('d.m.Y - H:i:s', lastChange);
+        var msg;
+
+        if(lastChange <= 0){
+            msg = 'Never';
+        } else {
+            msg = modo.Calendar.prototype.dateToString('d.m.Y - H:i:s', lastChange);
+        }
 
         includes = fileWatchers.length - 1;
 
