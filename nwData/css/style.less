@@ -8,6 +8,10 @@ html, body {
     overflow: hidden;
 }
 
+*{
+    outline: none;
+}
+
 body, button {
     -webkit-font-smoothing: antialiased;
 }
@@ -140,6 +144,7 @@ body, button {
                 background-position: -61px -11px;
             }
         }
+
     }
 
     .inputPath, .outputPath {
@@ -251,5 +256,10 @@ body, button {
         b{
             color: #7a1715;
         }
+    }
+
+    .connect #msg{
+        background: url(../img/notify-connect.png) center left no-repeat;
+        line-height: 32px;
     }
 }

@@ -44,13 +44,12 @@ define(['modules/central', 'text!modules/browserPushClient.js'], function (centr
 
             io.sockets.on('connection', function (socket){
 
-                console.log('Browser is connected');
+                central.trigger('connect');
 
                 central.on('compilation', function (file){
 
-                    console.log('Browser push: ' + file.get('outputFileName'));
-
                     socket.emit(file.get('outputFileName'));
+
                 });
             });
         }

@@ -9,7 +9,8 @@ define(['modules/central'], function (central){
 
     var gui,
         win,
-        winBody;
+        winBody,
+        hideTimer;
 
     gui = nodeRequire('nw.gui');
 
@@ -23,6 +24,7 @@ define(['modules/central'], function (central){
         resizable: false,
         width: 300,
         height: 100,
+        show: false,
         position: null
     });
 
@@ -93,20 +95,32 @@ define(['modules/central'], function (central){
             update('Compilation successful!', 'success');
             slideUp();
 
-            setTimeout(function(){
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(function (){
                 slideDown();
             }, 2000);
         });
 
-        central.on('compilationError', function(obj){
+        central.on('compilationError', function (obj){
             var err;
             err = obj.get('error');
             update('Compilation error in file:<br><b>' + err.filename.replace(obj.get('inputFolder'), '') + '</b> on line <b>' + err.line + '</b><br>' + err.message, 'error');
             slideUp();
 
-            setTimeout(function(){
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(function (){
                 slideDown();
-            }, 10000);
-        })
+            }, 20000);
+        });
+
+        central.on('connect', function (){
+            update('Browser has connected.', 'connect');
+            slideUp();
+
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(function (){
+                slideDown();
+            }, 2000);
+        });
     });
 });
