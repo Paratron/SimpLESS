@@ -103,24 +103,29 @@ define([], function (){
 
             this.on('change:outputPath', function (){
                 this.set('outputFileName', this.get('outputPath').split('/').pop());
+                this.collection.trigger('change');
                 this.getFileMTime();
             });
 
-            this.set('outputPath', path.join('/') + '/' + this.get('fileName').replace('.less', '.css'));
+            if(!this.attributes.outputPath){
+                this.set('outputPath', path.join('/') + '/' + this.get('fileName').replace('.less', '.css'));
 
-            //Is there a subdirectory "css" in this folder?
-            nodeFS.exists(path.join('/') + '/css/', function (exists){
-                if(exists){
-                    that.set('outputPath', path.join('/') + '/css/' + that.get('fileName').replace('.less', '.css'));
-                }
-            });
+                //Is there a subdirectory "css" in this folder?
+                nodeFS.exists(path.join('/') + '/css/', function (exists){
+                    if(exists){
+                        that.set('outputPath', path.join('/') + '/css/' + that.get('fileName').replace('.less', '.css'));
+                    }
+                });
 
-            //Is there a subdirectory "css" in the parent folder?
-            nodeFS.exists(path.slice(0, -1).join('/') + '/css/', function (exists){
-                if(exists){
-                    that.set('outputPath', path.slice(0, -1).join('/') + '/css/' + that.get('fileName').replace('.less', '.css'));
-                }
-            });
+                //Is there a subdirectory "css" in the parent folder?
+                nodeFS.exists(path.slice(0, -1).join('/') + '/css/', function (exists){
+                    if(exists){
+                        that.set('outputPath', path.slice(0, -1).join('/') + '/css/' + that.get('fileName').replace('.less', '.css'));
+                    }
+                });
+            } else {
+                this.set('outputFileName', this.get('outputPath').split('/').pop());
+            }
 
             this.getFileMTime();
 
@@ -204,7 +209,7 @@ define([], function (){
                             compress: that.get('doMinify')
                         });
                     }
-                    catch(e){
+                    catch (e) {
                         that.set({
                             state: 2,
                             error: e
@@ -314,10 +319,12 @@ define([], function (){
         initialize: function (){
             var that = this;
 
-            this.on('add remove', function (){
+            this.on('add remove change', function (){
                 var files;
 
-                files = that.pluck('inputPath');
+                files = that.map(function (e){
+                    return [e.get('inputPath'), e.get('outputPath')];
+                });
 
                 localStorage.setItem('fileList', JSON.stringify(files));
             });
@@ -342,9 +349,11 @@ define([], function (){
             files = JSON.parse(files);
 
             _.each(files, function (filename){
-                if(nodeFS.existsSync(filename)){
+                console.log(filename);
+                if(nodeFS.existsSync(filename[0])){
                     central.observedFiles.add({
-                        inputPath: filename
+                        inputPath: filename[0],
+                        outputPath: filename[1]
                     });
                 }
             });
