@@ -8,7 +8,7 @@ html, body {
     overflow: hidden;
 }
 
-body, button{
+body, button {
     -webkit-font-smoothing: antialiased;
 }
 
@@ -21,7 +21,7 @@ body, button{
     background: #fff;
 }
 
-.saveFile{
+.saveFile {
     display: none;
 }
 
@@ -34,7 +34,7 @@ body, button{
     background-color: #f8fbfe;
     border-bottom: #e6f0fa solid 1px;
 
-    .errorbox{
+    .errorbox {
         margin-left: -10px;
         margin-right: -10px;
         margin-bottom: -5px;
@@ -62,7 +62,7 @@ body, button{
         display: inline;
     }
 
-    .includes{
+    .includes {
         font-weight: bold;
         color: #9e9e9e;
     }
@@ -156,26 +156,26 @@ body, button{
     }
 }
 
-.success{
-    .status{
+.success {
+    .status {
         color: #8cbb1c;
     }
 
-    .outputPath{
+    .outputPath {
         background: url(../img/compiled.png) left center no-repeat;
     }
 }
 
-.error{
-    .status{
+.error {
+    .status {
         color: #fc2a24;
         font-weight: normal;
 
-        b{
+        b {
             color: #a11f1c;
         }
     }
-    .outputPath{
+    .outputPath {
         background: url(../img/error.png) left center no-repeat;
         color: #fc2a24;
     }
@@ -203,12 +203,13 @@ body, button{
     background-image: linear-gradient(to top, #5781ad, #80afdf);
 }
 
-.logo{
+.logo {
     padding: 6px 10px;
     border-top: #a6c7e9;
     margin-top: 1px;
 
-    b{
+
+    b {
         color: #385e85;
         font-weight: bold;
         font-size: 16px;
@@ -218,4 +219,37 @@ body, button{
     color: #fff;
     font-size: 14px;
     text-shadow: #4c6d91 0 -1px 0;
+}
+
+.notification {
+    height: auto;
+
+    body {
+        height: auto;
+        line-height: 1.6em;
+    }
+
+    .wrapper{
+        padding: 20px;
+    }
+
+    #msg{
+        padding-left: 40px;
+        min-height: 32px;
+    }
+
+    .success #msg{
+        background: url(../img/notify-success.png) center left no-repeat;
+        line-height: 32px;
+    }
+
+    .error #msg{
+        background: url(../img/notify-error.png) center left no-repeat;
+
+        color: #a11f1c;
+
+        b{
+            color: #7a1715;
+        }
+    }
 }

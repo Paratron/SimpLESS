@@ -12,6 +12,12 @@
 require.nodeRequire = window.nodeRequire;
 
 define(['ui/base'], function (ui){
+    var gui = nodeRequire('nw.gui');
+
+    gui.Window.get().on('close', function(){
+        gui.App.quit();
+    });
+
     modo.init(ui.root);
 
     require(['modules/browserPush'], function(browserPush){
@@ -28,5 +34,9 @@ define(['ui/base'], function (ui){
                 window.gui.Shell.openExternal('http://wearekiss.com/simpless');
             }
         });
+    });
+
+    require(['modules/notifier'], function(notifier){
+
     });
 });

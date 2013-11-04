@@ -195,6 +195,7 @@ define([], function (){
                             state: 2,
                             error: e
                         });
+                        central.trigger('compilationError', that);
                         return;
                     }
 
@@ -208,6 +209,7 @@ define([], function (){
                             state: 2,
                             error: e
                         });
+                        central.trigger('compilationError', that);
                         return;
                     }
 
