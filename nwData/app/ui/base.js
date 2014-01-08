@@ -58,6 +58,7 @@ define(['modules/central', 'text!templates/filesList.html'], function (central, 
                                 $('#saveFile')
                                     .attr('nwworkingdir', workingDir)
                                     .attr('nwsaveas', nodePath.basename(m.get('outputPath')))
+                                    .val('')
                                     .trigger('click')
                                     .one('change', function (){
                                         m.set('outputPath', $(this).val().replace(/\\/g, '/'));
