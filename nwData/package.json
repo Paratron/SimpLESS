@@ -2,7 +2,7 @@
     "name": "SimpLESS",
     "main": "index.html",
     "description": "A simple app to compile your LESS files into CSS.",
-    "version": "2.0",
+    "version": "2.0.0",
     "keywords": ["less", "css", "compiler"],
 
     "update": {
